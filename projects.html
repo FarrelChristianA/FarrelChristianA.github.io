@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Projects | Farrel Christian Ariyanto</title>
+<meta name="description" content="Data and macro case studies by Farrel Christian Ariyanto, built from public data.">
+<meta name="theme-color" content="#0d1012">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="projects">
+<div class="veil"></div>
+<div class="ambient"></div><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="cursor-ring" aria-hidden="true"></div><div class="grid-lines"></div><div class="spotlight"></div>
+<div class="progress"></div>
+
+<!-- ===== navigation ===== -->
+<div class="nav-wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="index.html" aria-label="Home">
+      <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#9bf6e6"/><stop offset=".5" stop-color="#2dd4bf"/><stop offset="1" stop-color="#0f9488"/></linearGradient></defs><rect x="1.5" y="1.5" width="29" height="29" rx="9" stroke="url(#lg)" stroke-width="1.6"/><path d="M9 22V10h7M9 16h5.5" stroke="url(#lg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 12.4a4.6 4.6 0 1 0 0 7.2" stroke="url(#lg)" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="24.6" r="1.6" fill="#7af0dc"/></svg>
+      <span>Farrel Christian</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" data-page="home">Home</a>
+      <a href="projects.html" data-page="projects">Projects</a>
+      <a href="cv.html" data-page="cv">CV</a>
+      <a href="bio.html" data-page="bio">Biography</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn menu-toggle" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <a class="pill-btn" href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      <a class="mail-btn" href="mailto:Farrel.C.Ariyanto@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><span class="label">Email me</span></a>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow reveal">Projects</span>
+      <h1 class="split" style="margin:18px 0 22px">Work, shown <span class="grad-text">step by step.</span></h1>
+      <p class="lead reveal d1">Every project here follows the same order: the question, the data, the method, the result, and the limits. If a number has no source, it is not on this page.</p>
+      <div class="filters" data-filter-group="#plist">
+        <button class="chip on" data-filter="all">All</button>
+        <button class="chip" data-filter="macro">Macro &amp; markets</button>
+        <button class="chip" data-filter="data">Data analysis</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container project-list" id="plist">
+      <a class="card project-card reveal" data-kind="data" href="projects/sample-project.html">
+        <div class="visual">
+          <span class="sample-flag">Example layout</span>
+          <svg viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="pa" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#2dd4bf" stop-opacity=".35"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></linearGradient>
+              <linearGradient id="pl" x1="0" x2="1"><stop stop-color="#9bf6e6"/><stop offset="1" stop-color="#0f9488"/></linearGradient>
+            </defs>
+            <g stroke="rgba(255,255,255,.06)"><path d="M0 85H600M0 170H600M0 255H600"/><path d="M120 0V340M240 0V340M360 0V340M480 0V340"/></g>
+            <path d="M0 250 L60 232 L120 240 L180 200 L240 214 L300 160 L360 176 L420 128 L480 140 L540 96 L600 104 L600 340 L0 340Z" fill="url(#pa)"/>
+            <path class="draw" d="M0 250 L60 232 L120 240 L180 200 L240 214 L300 160 L360 176 L420 128 L480 140 L540 96 L600 104" fill="none" stroke="url(#pl)" stroke-width="3"/>
+            <g fill="#0d1012" stroke="#7af0dc" stroke-width="2"><circle cx="300" cy="160" r="6"/><circle cx="540" cy="96" r="6"/></g>
+          </svg>
+        </div>
+        <div class="body">
+          <div class="meta"><span class="pill hot">Sample</span><span class="pill">Excel</span><span class="pill">SQL</span><span class="pill">Public data</span></div>
+          <h3>Sample project: how a case study will read</h3>
+          <p class="muted">A placeholder that shows the layout of a finished project page. The chart and text are examples, not results. The first real case study is in progress.</p>
+          <div class="facts">
+            <div><span>Tools</span><b>Excel, SQL</b></div>
+            <div><span>Data</span><b>Public sources</b></div>
+            <div><span>Status</span><b>Example</b></div>
+          </div>
+          <span class="link-arrow">Open the sample page <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+
+      <div class="card ghost-card reveal d1" data-kind="macro">
+        <span class="eyebrow">Coming next</span>
+        <h3 style="margin-top:14px;font-size:24px">One central bank week, followed from start to finish</h3>
+        <p class="muted">Positioning before the meeting, scenarios written ahead of the decision, the headlines that followed, and a test across several meetings. Built only from public data.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container foot">
+    <span>&copy; <span data-year>2026</span> Farrel Christian Ariyanto. Hand-built, hosted on GitHub.</span>
+    <div class="foot-links">
+      <a href="mailto:Farrel.C.Ariyanto@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/FarrelChristianA" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
