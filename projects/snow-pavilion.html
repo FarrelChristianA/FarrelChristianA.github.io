@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snow Pavilion: Star River | Farrel Christian Ariyanto</title>
+<meta name="description" content="A trading dashboard built by directing AI: screener, journal, AI chat grounded in live data and a Risk Guard. V1 to V4.2, with a postmortem.">
+<meta name="theme-color" content="#0d1012">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-page="projects">
+<div class="veil"></div>
+<div class="ambient"></div><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="cursor-ring" aria-hidden="true"></div><div class="grid-lines"></div><div class="spotlight"></div>
+<div class="progress"></div>
+
+<!-- ===== navigation ===== -->
+<div class="nav-wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="../index.html" aria-label="Home">
+      <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#9bf6e6"/><stop offset=".5" stop-color="#2dd4bf"/><stop offset="1" stop-color="#0f9488"/></linearGradient></defs><rect x="1.5" y="1.5" width="29" height="29" rx="9" stroke="url(#lg)" stroke-width="1.6"/><path d="M9 22V10h7M9 16h5.5" stroke="url(#lg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 12.4a4.6 4.6 0 1 0 0 7.2" stroke="url(#lg)" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="24.6" r="1.6" fill="#7af0dc"/></svg>
+      <span>Farrel Christian</span>
+    </a>
+    <div class="nav-links">
+      <a href="../index.html" data-page="home">Home</a>
+      <a href="../projects.html" data-page="projects">Projects</a>
+      <a href="../cv.html" data-page="cv">CV</a>
+      <a href="../bio.html" data-page="bio">Biography</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn menu-toggle" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <a class="pill-btn" href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      <a class="mail-btn" href="mailto:Farrel.C.Ariyanto@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><span class="label">Email me</span></a>
+    </div>
+  </nav>
+</div>
+
+<main>
+  <section class="p-hero">
+    <div class="container">
+      <a class="back" href="../projects.html">&larr; All projects</a><br>
+      <span class="eyebrow reveal">Project 02 &middot; Trading tool &middot; Built with AI</span>
+      <h1 class="split">Snow Pavilion <span class="grad-text">Star River</span></h1>
+      <p class="lead reveal d1">A trading dashboard that runs on my own computer: a market screener, open positions, a journal that fills itself, an AI market chat that only uses live data, and a Risk Guard that watches my limits. It went from V1 to V4.2. One version collapsed, and I rebuilt it under rules I wrote after it broke.</p>
+      <div class="p-meta reveal d2"><span class="pill">Python</span><span class="pill">Flask</span><span class="pill">SQLite</span><span class="pill">JavaScript</span><span class="pill">Chart.js</span><span class="pill hot live-dot">In daily use &middot; V4.2</span><span class="pill">March 2026 to now</span></div>
+      <div class="hero-cta reveal d2">
+        <a class="btn btn-primary" href="#demo" data-launch-target="#demo">Try it live <span class="arrow">&rarr;</span></a>
+        <a class="btn btn-ghost" href="https://github.com/FarrelChristianA/snow-pavilion-trading-dashboard" target="_blank" rel="noopener">View the code on GitHub <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      </div>
+      <div class="big-pic">
+        <div class="card reveal"><span class="eyebrow">The big picture</span><p class="lead2">A personal trading cockpit. Market data, a screener, open positions, a trade journal and risk limits sit in one place on my own computer, so decisions follow rules instead of mood.</p></div>
+        <div class="pfs"><div class="card reveal d1"><span class="k">The problem</span><p>Six websites open for every session, and the risk limits lived only in my head.</p></div><div class="card reveal d2"><span class="k">What it does</span><p>One screen with an 11 strategy screener, positions, an automatic journal, an AI chat that only uses live data, and a Risk Guard.</p></div><div class="card reveal d3"><span class="k">Where it stands</span><p>Version 4.2, in daily use. The code is published with a demo mode that needs no keys.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="p-sec">
+    <div class="container why">
+      <div class="when reveal"><span class="eyebrow">Why I built it</span><b class="grad-text" style="margin-top:14px">Mar 2026</b><span>First build with AI</span></div>
+      <div class="reveal d1"><p>I started learning markets in July 2025, and by early 2026 I was trading with small positions and studying every day. Every session meant opening an exchange, a screener, a news feed, an economic calendar and a spreadsheet journal, while my risk limits lived only in my head.</p><p>Instead of juggling all those websites, I decided to build one dashboard where everything lives together. It was also my first real build with AI. I had just started working with AI agents, and this is where I learned to direct them: through a version that looked great, broke completely, and taught me to write rules before writing code.</p><div class="chain"><span class="here">Snow Pavilion: Star River</span><a href="ai-job-screener.html">AI Job Screener</a><a href="macro-master.html">Macro Master</a><a href="ledgerline.html">Ledgerline</a><a href="flow-dashboard.html">Flow Dashboard</a></div></div>
+    </div>
+  </section>
+
+  <section class="demo-sec">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">Live demo</span><h2 class="split" style="margin-top:16px">Don't just read about it. Try it.</h2></div><p class="reveal d1">A limited version of the app runs right here, inside this page, on dummy data. Click to start, or switch to phone view to see the mobile layout.</p></div>
+      <div class="demo-flag reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg><div><b>Demo version with dummy data.</b> This is a limited preview: some features are switched off, and nothing you do here is saved.</div></div>
+      <div class="demo-shell reveal" id="demo" data-demo="../demos/snow-pavilion/index.html" data-title="Snow Pavilion: Star River live demo">
+        <div class="demo-inner">
+          <div class="demo-bar"><span class="dots"><i></i><i></i><i></i></span><span class="demo-url">snow pavilion &middot; <b>demo mode</b></span><span class="seg"><button class="on" data-view="desktop">Desktop</button><button data-view="phone">Phone</button></span><a class="demo-open" href="../demos/snow-pavilion/index.html" target="_blank" rel="noopener">Full screen <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div>
+          <div class="demo-stage">
+            <div class="demo-poster" role="button" tabindex="0" aria-label="Start the live demo"><img src="../assets/projects/snow-pavilion/overview-dark.webp" alt="" loading="lazy"><div class="launch"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg></span><b>Launch the interactive demo</b><span>FICTIONAL DATA &middot; NOTHING IS SAVED</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-note"><span>The real app runs with Python on my own machine. This web version replays a recorded demo session in your browser: a fictional account and made up prices. Demo PIN if asked: 0000.</span></div>
+      <div class="try-list"><div class="card reveal d0"><span class="n">TRY 01</span><p>Use the left rail to move between Overview, Screener, Positions, Journal and History.</p></div><div class="card reveal d1"><span class="n">TRY 02</span><p>On Screener, press <b>Run All</b> to scan the market with all 11 strategies.</p></div><div class="card reveal d2"><span class="n">TRY 03</span><p>Open Journal and History to see the trade log, the PnL charts and the calendar heatmap.</p></div></div>
+    </div>
+  </section>
+
+  <section class="p-sec">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">What it does</span><h2 class="split" style="margin-top:16px">The parts that matter.</h2></div></div>
+      <div class="hl-grid"><div class="card reveal d0"><span class="n">01</span><h3>Screener</h3><p>11 strategies run on every USDT perpetual, including a weighted score: 35% momentum, 30% volatility, 20% volume, 15% RSI band.</p></div><div class="card reveal d1"><span class="n">02</span><h3>AI that cannot invent prices</h3><p>The market chat only receives live prices and the last 48 hours of headlines, and its instructions forbid citing anything outside that.</p></div><div class="card reveal d2"><span class="n">03</span><h3>Risk Guard</h3><p>Every 30 seconds it checks equity, the peak and the day's realized PnL against fixed and trailing drawdown limits.</p></div></div>
+    </div>
+  </section>
+
+  <section class="container act">
+    <span class="eyebrow reveal">Act I &middot; The need</span>
+    <h2 class="split">Six tabs open. Zero rules enforced.</h2>
+    <p class="reveal">Trading crypto futures meant juggling an exchange tab, a screener, a news feed, an economic calendar, a spreadsheet journal and a calculator for position size. The risk limits lived only in my head. The tools that combined all of it were too expensive or did not work the way I needed, so I started building one dashboard on my own computer where the exchange, the journal and the rules live together.</p>
+  </section>
+  <section class="container act">
+    <span class="eyebrow reveal">Act II &middot; Versions</span>
+    <h2 class="split">From one plain page to V4.2.</h2>
+    <div class="versions reveal">
+      <div class="ver"><b>V1</b><span>Flask, SQLite, one page. Balance, positions, a basic journal.</span></div>
+      <div class="ver"><b>V2</b><span>One backend module per job: screener, news, calendar, backups. Still the core today.</span></div>
+      <div class="ver dead"><b>V3</b><span>A rebuild led by design. Collapsed.</span></div>
+      <div class="ver"><b>V4</b><span>Rebuilt from V2 under written rules.</span></div>
+      <div class="ver"><b>V4.1</b><span>Multiple accounts, Risk Guard, alerts, Sheets sync.</span></div>
+      <div class="ver"><b>V4.2</b><span>The Star River redesign, demo mode, open source.</span></div>
+    </div>
+  </section>
+  <section class="container act">
+    <span class="eyebrow reveal">Act III &middot; The collapse</span>
+    <h2 class="split">V3 looked beautiful. Every button was dead.</h2>
+    <p class="reveal">I let design lead. A new stylesheet went on top of the old one, the page was rebuilt with new element IDs, and the JavaScript that made the buttons work was never reconnected. Nothing was written down, so I could not even trace what had changed. V3 was abandoned.</p>
+    <div class="causes">
+      <div class="card reveal"><span class="k">CAUSE 01</span><h3>A second stylesheet</h3><p>2,229 lines on top of 3,500. Two cascades fighting each other.</p><div class="arrow">&rarr; layout breaks unpredictably</div></div>
+      <div class="card reveal d1"><span class="k">CAUSE 02</span><h3>New page, old script</h3><p>The script still looked for elements that no longer existed.</p><div class="arrow">&rarr; every button dead</div></div>
+      <div class="card reveal d2"><span class="k">CAUSE 03</span><h3>No documentation</h3><p>The working notes still described V2.</p><div class="arrow">&rarr; no way to trace the change</div></div>
+    </div>
+  </section>
+  <section class="container act">
+    <span class="eyebrow reveal">Act IV &middot; The rules</span>
+    <h2 class="split">I wrote a postmortem. It became the rulebook.</h2>
+    <p class="reveal">AI writes most of the code. These rules are how I direct it and how I check it. Every one exists because breaking it cost me a version.</p>
+    <div class="rules">
+      <div class="card reveal"><span class="k">RULE 01</span><h3>One file each</h3><p>One HTML, one CSS, one JS file. V3 died from splitting.</p></div>
+      <div class="card reveal d1"><span class="k">RULE 02</span><h3>Never ship unwired HTML</h3><p>Every button gets its JavaScript in the same change.</p></div>
+      <div class="card reveal d2"><span class="k">RULE 03</span><h3>Redesign in layers</h3><p>New styles go on top of the working app. No rebuilds from scratch.</p></div>
+      <div class="card reveal"><span class="k">RULE 04</span><h3>Test on a copy first</h3><p>Copy the folder, run it on a new port with separate data. Bring back only what is proven.</p></div>
+      <div class="card reveal d1"><span class="k">RULE 05</span><h3>Verify every change</h3><p>Syntax checks on every file touched, then a real test in the browser.</p></div>
+      <div class="card reveal d2"><span class="k">RULE 06</span><h3>List before you change</h3><p>Before big UI work, list every element ID the script uses. There are 214.</p></div>
+    </div>
+  </section>
+  <section class="container act">
+    <span class="eyebrow reveal">Act V &middot; How it works</span>
+    <h2 class="split">Three flows that keep it honest.</h2>
+    <div class="flows">
+      <div class="card flow reveal"><span class="pill hot">Flow A</span><h3 style="margin-top:14px">AI that cannot make up prices</h3><ol><li>A question comes in: "why is SOL moving?"</li><li>Pull live prices from the exchange.</li><li>Pull headlines from the last 48 hours.</li><li>Prompt = rules + prices + headlines + question, sent to Cerebras, with DeepSeek as the backup.</li><li>The answer may only cite data it was given.</li></ol></div>
+      <div class="card flow reveal d1"><span class="pill hot">Flow B</span><h3 style="margin-top:14px">Risk Guard, every 30 seconds</h3><ol><li>Read account equity.</li><li>New high? Raise the peak.</li><li>Compute today's realized PnL (Jakarta day).</li><li>Compare static and trailing drawdown to the limits.</li><li>Breach: red bar, sound and one notification per day.</li></ol></div>
+      <div class="card flow reveal d2"><span class="pill hot">Flow C</span><h3 style="margin-top:14px">Screener with 11 strategies</h3><ol><li>Scan every USDT perpetual.</li><li>Filter by turnover and open interest, drop stablecoins.</li><li>Run 11 strategies: trend, reversion, squeeze, structure and more.</li><li>Add 15m, 30m, 1h and 4h sparklines plus funding flags.</li><li>Cache it, so switching views is instant.</li></ol></div>
+    </div>
+  </section>
+  <section class="container act">
+    <span class="eyebrow reveal">Act VI &middot; Known flaws</span>
+    <h2 class="split">What is still rough, on purpose or on the list.</h2>
+    <p class="reveal">Before publishing the code I ran a flaw sweep: all 113 API endpoints probed in demo mode, with no keys, no network and broken input, and zero server errors. It still caught 7 real issues, including a monthly Excel backup that had been failing silently. Those are fixed. These remain:</p>
+    <div class="flaws">
+      <div class="card reveal"><span class="k">TRADE OFF</span><h3>Huge single files</h3><p>About 6k lines of script and 4.7k of CSS. Easy to keep wired, harder to navigate.</p></div>
+      <div class="card reveal d1"><span class="k">GAP</span><h3>No automated tests yet</h3><p>Syntax checks and manual passes today. Demo mode makes real tests possible in V5.</p></div>
+      <div class="card reveal d2"><span class="k">SCOPE</span><h3>One user, PIN only</h3><p>Built for one person on their own machine, not as a public web app.</p></div>
+      <div class="card reveal"><span class="k">FRAGILE</span><h3>Layout rules tied to order</h3><p>Some grid rules target cards by order. New cards get IDs.</p></div>
+      <div class="card reveal d1"><span class="k">DEPENDENCY</span><h3>Free data sources</h3><p>Calendar and sector data run on free quotas. They are cached with backups, but can be stale.</p></div>
+      <div class="card reveal d2"><span class="k">BACKLOG</span><h3>One exchange</h3><p>Bybit only, and the stop loss triggers on the last price. Support for more exchanges is planned.</p></div>
+    </div>
+  </section>
+  <section class="container act">
+    <span class="eyebrow reveal">Today</span>
+    <h2 class="split">In daily use, and still growing.</h2>
+    <p class="reveal">For the public version I added a demo mode that runs the whole app offline on made up data with no API keys, replaced all artwork with original art generated in code, and documented the architecture, the design system and every lesson above. Next is V5: a cleaner structure and a real test suite.</p>
+  </section>
+
+  <section class="p-sec">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">Screens</span><h2 class="split" style="margin-top:16px">A closer look.</h2></div><div class="g-tools reveal"><span class="seg mode-toggle" data-shot-mode><button class="on" data-mode="dark">Dark</button><button data-mode="light">Light</button></span><button class="g-btn" data-gal="gal" data-dir="prev" aria-label="Previous">&larr;</button><button class="g-btn" data-gal="gal" data-dir="next" aria-label="Next">&rarr;</button></div></div>
+      <div class="gallery" id="gal"><figure><div class="shot"><img src="../assets/projects/snow-pavilion/overview-dark.webp" data-dark="../assets/projects/snow-pavilion/overview-dark.webp" data-light="../assets/projects/snow-pavilion/overview-light.webp" alt="Overview: KPIs, Risk Guard, news and calendar, demo data" loading="lazy" width="1440" height="900"></div><figcaption><b>01</b><span>Overview: KPIs, Risk Guard, news and calendar</span></figcaption></figure><figure><div class="shot"><video src="../assets/projects/snow-pavilion/demo.mp4" muted loop playsinline autoplay preload="metadata"></video></div><figcaption><b>&#9654;</b><span>Walkthrough, 13 second loop</span></figcaption></figure><figure><div class="shot"><img src="../assets/projects/snow-pavilion/screener-dark.webp" data-dark="../assets/projects/snow-pavilion/screener-dark.webp" data-light="../assets/projects/snow-pavilion/screener-light.webp" alt="Screener: 11 strategies with sparklines across timeframes, demo data" loading="lazy" width="1440" height="900"></div><figcaption><b>02</b><span>Screener: 11 strategies with sparklines across timeframes</span></figcaption></figure><figure><div class="shot"><img src="../assets/projects/snow-pavilion/positions-dark.webp" data-dark="../assets/projects/snow-pavilion/positions-dark.webp" data-light="../assets/projects/snow-pavilion/positions-light.webp" alt="Positions: sizing, order ticket and open positions, demo data" loading="lazy" width="1440" height="900"></div><figcaption><b>03</b><span>Positions: sizing, order ticket and open positions</span></figcaption></figure><figure><div class="shot"><img src="../assets/projects/snow-pavilion/journal-dark.webp" data-dark="../assets/projects/snow-pavilion/journal-dark.webp" data-light="../assets/projects/snow-pavilion/journal-light.webp" alt="Journal: the trade log fills itself, demo data" loading="lazy" width="1440" height="900"></div><figcaption><b>04</b><span>Journal: the trade log fills itself</span></figcaption></figure><figure><div class="shot"><img src="../assets/projects/snow-pavilion/history-dark.webp" data-dark="../assets/projects/snow-pavilion/history-dark.webp" data-light="../assets/projects/snow-pavilion/history-light.webp" alt="History: PnL charts and calendar heatmap, demo data" loading="lazy" width="1440" height="900"></div><figcaption><b>05</b><span>History: PnL charts and calendar heatmap</span></figcaption></figure><figure><div class="shot"><img src="../assets/projects/snow-pavilion/lock-dark.webp" data-dark="../assets/projects/snow-pavilion/lock-dark.webp" data-light="../assets/projects/snow-pavilion/lock-light.webp" alt="Lock screen: PIN and the pavilion art, demo data" loading="lazy" width="1440" height="900"></div><figcaption><b>06</b><span>Lock screen: PIN and the pavilion art</span></figcaption></figure></div>
+      <p class="mono" style="color:var(--faint);font-size:12px;margin-top:6px">All screens show demo mode with fictional data. Drag, scroll or use the arrows. Click a screen to enlarge.</p>
+    </div>
+  </section>
+
+  <section class="p-sec">
+    <div class="container built">
+      <div class="card reveal"><span class="eyebrow">How I built it</span><h3 style="font-size:24px;margin:16px 0 10px">Designed and directed by me. Code written with AI.</h3><p>I don't have a coding background. I learned to build by directing AI: I decide what the tool must do, write the specs and the rules, review every change and test it until it works. Claude and other AI tools write the code.</p><ul><li>Specs and rules written before any code</li><li>Every change checked in the browser before it stays</li><li>Secrets, personal data and real accounts removed before publishing</li></ul></div>
+      <div class="card reveal d1"><span class="eyebrow">The code</span><h3 style="font-size:24px;margin:16px 0 10px">Clean code, no keys inside.</h3><p>The repository has the code, a README and notes on how it is built. It contains no API keys, accounts or personal data, and it starts in demo mode with dummy data.</p><div class="hero-cta" style="margin-top:22px"><a class="btn btn-ghost" href="https://github.com/FarrelChristianA/snow-pavilion-trading-dashboard" target="_blank" rel="noopener">View the repository <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a></div></div>
+    </div>
+  </section>
+
+  <section class="container pn">
+    <a class="card reveal" href="ecb-week.html"><small>&larr; Previous project</small><h3>Why did the ECB&#x27;s hike barely move the euro?</h3></a>
+    <a class="card reveal d1" href="ai-job-screener.html"><small>Next project &rarr;</small><h3>AI Job Screener</h3></a>
+  </section>
+</main>
+
+<footer>
+  <div class="container foot">
+    <span>&copy; <span data-year>2026</span> Farrel Christian Ariyanto. Designed by me, built with AI, hosted on GitHub.</span>
+    <div class="foot-links">
+      <a href="mailto:Farrel.C.Ariyanto@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/FarrelChristianA" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

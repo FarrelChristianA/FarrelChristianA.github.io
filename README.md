@@ -1,30 +1,38 @@
-# Farrel Christian Ariyanto: Data Analyst Portfolio
+# Farrel Christian Ariyanto
 
-I'm an Industrial Engineer working as a Junior Macro Analyst and moving into data analysis. This repository holds the case studies, data files and queries behind my portfolio site.
+Industrial Engineer working in macro and market research, moving into data analysis. This repository is the source of my portfolio website.
 
-LinkedIn: https://www.linkedin.com/in/farrel-christian-ariyanto
-Live site: [add the Vercel address here once it is live]
+**Live site:** [farrelchristian.vercel.app](https://farrelchristian.vercel.app) (preview while the repository is private)
+
+**LinkedIn:** [linkedin.com/in/farrel-christian-ariyanto](https://www.linkedin.com/in/farrel-christian-ariyanto)
 
 ## Projects
 
-1. **ECB Week (7 to 11 September 2026).** One central bank decision followed from positioning data to the day-after recap, rebuilt from public data.
-2. **Does the euro move more on ECB days?** An event study of eight ECB decisions, done in Excel and SQL. Method, results and limits are on the project page.
+| # | Project | What it shows | Status |
+|---|---|---|---|
+| 01 | [Why did the ECB's hike barely move the euro?](projects/ecb-week/) | One central bank decision week followed from the Saturday before to the Saturday after: positioning, scenarios, a morning brief, headlines, an evening recap, and an Excel event study across eight ECB meetings | Done |
+| 02 | [Snow Pavilion: Star River](projects/snow-pavilion.html) | Local-first crypto trading dashboard built by directing AI: screener, journal, grounded AI chat, Risk Guard. Live web demo | Done |
+| 03 | [AI Job Screener](projects/ai-job-screener.html) | Collects LinkedIn and Jobstreet postings, scores them with AI, tracks applications. Live web demo | Done |
+| 04 | [Macro Master](projects/macro-master.html) | Macro learning workspace with search, SVG charts and an AI tutor. Live demo | Done |
+| 05 | [Ledgerline](projects/ledgerline.html) | Personal-finance app around payday budgets, six themes. Live demo | Done |
+| 06 | [Flow Dashboard](projects/flow-dashboard.html) | Local-first productivity dashboard with a daily timeline. Live demo | Done |
 
-Both are in progress. This README will be updated with results when they are finished.
+Projects 02 to 06 were designed and directed by me and built with AI (no coding background). Each has its own repository and a live demo with fictional data under `demos/`.
+
+## How I work
+
+- Public sources only, each number linked to its source.
+- Each document uses only what was public on its date.
+- One shared fact sheet, so no two documents disagree.
 
 ## Repository layout
 
-- `index.html`, `cv.html`, `bio.html`: site pages
-- `projects/`: one page per project
-- `assets/`: styles, images and charts
-- `data/`: Excel and CSV files used in the projects
-- `sql/`: the SQL queries
-- `README.md`: this file
+- `index.html`, `projects.html`, `cv.html`, `bio.html`: site pages
+- `projects/`: one page per project; `projects/ecb-week/` holds the case study PDFs, Excel files and covers
+- `demos/`: live web demos of projects 02 to 06 (fictional data, nothing saved)
+- `assets/`: styles, scripts, images, project screenshots (`assets/projects/`) and downloadable CVs (`assets/cv/`)
+- `data/`, `sql/`: reserved for upcoming projects
 
-## Data sources
-
-Public data only: ECB, Eurostat, CFTC and FRED. Every number in a project page lists its source and the date it was accessed.
-
-## Note
+Plain HTML, CSS and JavaScript. No framework, no build step. Designed by me, built with AI.
 
 Independent portfolio project built from public data. Not investment advice.

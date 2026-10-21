@@ -1,0 +1,9 @@
+decision_date,decision,matched_expectation,change_decision_day_to_next_day,change_next_5_fixings,baseline_avg_abs_daily_change_prior_60,ratio,ratio_above_1_5
+2025-10-30,"Hold, deposit rate 2.00%",Yes,0.000346,-0.001472,0.002839,0.1220,No
+2025-12-18,"Hold, deposit rate 2.00%",Yes,-0.000597,0.004011,0.002338,0.2554,No
+2026-02-05,"Hold, deposit rate 2.00%",Yes,-0.000339,0.006442,0.002559,0.1325,No
+2026-03-19,"Hold, deposit rate 2.00%",Yes,0.005745,0.004352,0.002982,1.9266,Yes
+2026-04-30,"Hold, deposit rate 2.00%",Partly,-0.000171,0.005042,0.003186,0.0536,No
+2026-06-11,"Hike 25bp, deposit rate 2.25%",Yes,0.002600,-0.006588,0.002702,0.9623,No
+2026-07-23,"Hold, deposit rate 2.25%",Yes,-0.001317,0.007374,0.002093,0.6292,No
+2026-09-10,"Hike 25bp, deposit rate 2.50%",Yes,-0.002066,-0.011622,0.001988,1.0390,No

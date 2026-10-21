@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why did the ECB hike barely move the euro? | Farrel Christian Ariyanto</title>
+<meta name="description" content="A case study built from public data: one ECB decision week, followed from Saturday to Saturday, plus a study across eight meetings in Excel.">
+<meta name="theme-color" content="#0d1012">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body data-page="projects">
+<div class="veil"></div>
+<div class="ambient"></div><div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="cursor-ring" aria-hidden="true"></div><div class="grid-lines"></div><div class="spotlight"></div>
+<div class="progress"></div>
+
+<!-- ===== navigation ===== -->
+<div class="nav-wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="../index.html" aria-label="Home">
+      <svg viewBox="0 0 32 32" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#9bf6e6"/><stop offset=".5" stop-color="#2dd4bf"/><stop offset="1" stop-color="#0f9488"/></linearGradient></defs><rect x="1.5" y="1.5" width="29" height="29" rx="9" stroke="url(#lg)" stroke-width="1.6"/><path d="M9 22V10h7M9 16h5.5" stroke="url(#lg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 12.4a4.6 4.6 0 1 0 0 7.2" stroke="url(#lg)" stroke-width="2" stroke-linecap="round"/><circle cx="25" cy="24.6" r="1.6" fill="#7af0dc"/></svg>
+      <span>Farrel Christian</span>
+    </a>
+    <div class="nav-links">
+      <a href="../index.html" data-page="home">Home</a>
+      <a href="../projects.html" data-page="projects">Projects</a>
+      <a href="../cv.html" data-page="cv">CV</a>
+      <a href="../bio.html" data-page="bio">Biography</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn menu-toggle" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <a class="pill-btn" href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+      <a class="mail-btn" href="mailto:Farrel.C.Ariyanto@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><span class="label">Email me</span></a>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <section class="page-head" style="padding-bottom:10px">
+    <div class="container">
+      <a class="back" href="../projects.html">&larr; All projects</a><br>
+      <span class="eyebrow reveal">Case study &middot; Macro and data &middot; Public data only</span>
+      <h1 class="split" style="margin:18px 0 22px">Why did the ECB's hike barely <span class="grad-text">move the euro?</span></h1>
+      <p class="lead reveal d1">On Thursday 10 September 2026 the European Central Bank raised rates by 25 basis points. The euro hardly reacted. I followed that week the way a research desk would, from the Saturday before to the Saturday after, and wrote each document as if on its own date, using only what was public by then.</p>
+      <div class="answer">
+        <div class="card reveal"><div class="lbl">Priced in</div><div class="big grad-text">&gt;95%</div><p>Market odds of a September hike, per the Bundesbank President on 2 Sep.</p></div>
+        <div class="card reveal d1"><div class="lbl">The decision</div><div class="big">2.50%</div><p>Deposit rate, up 25bp from 2.25%. Unanimous, guidance unchanged.</p></div>
+        <div class="card reveal d2"><div class="lbl">The euro, next fixing</div><div class="big">&minus;0.21%</div><p>ECB reference rate, 1.1616 on 10 Sep to 1.1592 on 11 Sep.</p></div>
+        <div class="card reveal d3"><div class="lbl">Study across eight meetings</div><div class="big grad-text">0.64</div><p>Average reaction as a multiple of a normal day. No clear effect on decision days.</p></div>
+      </div>
+      <p class="short reveal">The short answer: the hike was news to nobody. Funds were only mildly short the euro, the guidance did not change, and US data landed fifteen minutes after the decision. Across eight ECB meetings, decision days did not move the euro more than ordinary days.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container timeline" id="tl" style="padding-top:40px">
+      <div class="t-year"><span>SAT 5 SEP</span></div>
+      <div class="t-item left" data-kind="prep">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Preparation</span><span class="owner">central bank overview</span><h3>Central bank backdrop: the ECB going into the week</h3>
+          <a class="doc-cover" href="ecb-week/files/Sat05Sep_Central_Bank_Backdrop.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Sat05Sep_Central_Bank_Backdrop_cover.jpg" alt="Cover of Central bank backdrop: the ECB going into the week" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">Where policy stood, what the ECB was watching, and what was priced. Rates, the guidance sentence, the inflation trend and what could still surprise.</p>
+          <div class="doc-links"><a href="ecb-week/files/Sat05Sep_Central_Bank_Backdrop.pdf" target="_blank" rel="noopener">Read PDF</a></div></div>
+        <div class="side-date">Saturday 5 September</div>
+      </div>
+      <div class="t-item right" data-kind="prep">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Preparation</span><span class="owner">futures positioning</span><h3>Weekly positioning: euro futures going into the week</h3>
+          <a class="doc-cover" href="ecb-week/files/Sat05Sep_Weekly_Positioning.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Sat05Sep_Weekly_Positioning_cover.jpg" alt="Cover of Weekly positioning: euro futures going into the week" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">Public CFTC data. Leveraged funds were net short 38,173 euro contracts, 4.4% of open interest: a mild short, far smaller than the yen's.</p>
+          <div class="doc-links"><a href="ecb-week/files/Sat05Sep_Weekly_Positioning.pdf" target="_blank" rel="noopener">Read PDF</a><a href="ecb-week/files/Sat05Sep_Weekly_Positioning_data.xlsx">Excel</a></div></div>
+        <div class="side-date">Saturday 5 September</div>
+      </div>
+      <div class="t-year"><span>MON 7 SEP</span></div>
+      <div class="t-item left" data-kind="prep">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Preparation</span><span class="owner">event scenarios</span><h3>The week ahead: the ECB on Thursday, then US CPI</h3>
+          <a class="doc-cover" href="ecb-week/files/Mon07Sep_Week_Ahead.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Mon07Sep_Week_Ahead_cover.jpg" alt="Cover of The week ahead: the ECB on Thursday, then US CPI" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">A calendar for each day and three scenarios with exact thresholds for the decision, written before anything happened.</p>
+          <div class="doc-links"><a href="ecb-week/files/Mon07Sep_Week_Ahead.pdf" target="_blank" rel="noopener">Read PDF</a></div></div>
+        <div class="side-date">Monday 7 September</div>
+      </div>
+      <div class="t-year"><span>THU 10 SEP</span></div>
+      <div class="t-item right" data-kind="day">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Decision day</span><span class="owner">macro briefing</span><h3>Morning brief: a hike is the base case</h3>
+          <a class="doc-cover" href="ecb-week/files/Thu10Sep_Morning_Brief.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Thu10Sep_Morning_Brief_cover.jpg" alt="Cover of Morning brief: a hike is the base case" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">Markets, oil, yields and the day's calendar before the 14:15 CEST decision, Frankfurt time. Every level dated the day before or earlier.</p>
+          <div class="doc-links"><a href="ecb-week/files/Thu10Sep_Morning_Brief.pdf" target="_blank" rel="noopener">Read PDF</a></div></div>
+        <div class="side-date">Thursday 10 September, morning</div>
+      </div>
+      <div class="t-item left" data-kind="day">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Decision day</span><span class="owner">news</span><h3>Five headlines from the decision to Friday</h3>
+          <a class="doc-cover" href="ecb-week/files/Thu10Sep_Headlines.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Thu10Sep_Headlines_cover.jpg" alt="Cover of Five headlines from the decision to Friday" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">The decision, the projections, the press conference, a policymaker's view and the turn to US CPI. Each card checked against Monday's scenarios.</p>
+          <div class="doc-links"><a href="ecb-week/files/Thu10Sep_Headlines.pdf" target="_blank" rel="noopener">Read PDF</a></div></div>
+        <div class="side-date">Thursday 10 September, 14:15 CET onward</div>
+      </div>
+      <div class="t-item right" data-kind="day">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Decision day</span><span class="owner">client email</span><h3>Evening recap: the hike was on script, the projections were not</h3>
+          <a class="doc-cover" href="ecb-week/files/Thu10Sep_Evening_Recap.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Thu10Sep_Evening_Recap_cover.jpg" alt="Cover of Evening recap: the hike was on script, the projections were not" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">Projections leaned hawkish, yet US producer prices came out fifteen minutes later. Written without Friday's data.</p>
+          <div class="doc-links"><a href="ecb-week/files/Thu10Sep_Evening_Recap.pdf" target="_blank" rel="noopener">Read PDF</a></div></div>
+        <div class="side-date">Thursday 10 September, evening</div>
+      </div>
+      <div class="t-year"><span>SAT 19 SEP</span></div>
+      <div class="t-item left" data-kind="after">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Aftermath</span><span class="owner">futures positioning</span><h3>Weekly positioning: did traders change their mind?</h3>
+          <a class="doc-cover" href="ecb-week/files/Sat19Sep_Weekly_Positioning.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Sat19Sep_Weekly_Positioning_cover.jpg" alt="Cover of Weekly positioning: did traders change their mind?" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">The first CFTC print after the decision. The net short kept narrowing at the same pace as the week before: no change of course.</p>
+          <div class="doc-links"><a href="ecb-week/files/Sat19Sep_Weekly_Positioning.pdf" target="_blank" rel="noopener">Read PDF</a><a href="ecb-week/files/Sat19Sep_Weekly_Positioning_data.xlsx">Excel</a></div></div>
+        <div class="side-date">Saturday 19 September</div>
+      </div>
+      <div class="t-item right" data-kind="study">
+        <span class="node"></span>
+        <div class="card"><span class="kind">Evidence</span><span class="owner">event study</span><h3>Study across eight meetings: do ECB days move the euro more?</h3>
+          <a class="doc-cover" href="ecb-week/files/Sat19Sep_Eight_Meeting_Study.pdf" target="_blank" rel="noopener"><img src="ecb-week/covers/Sat19Sep_Eight_Meeting_Study_cover.jpg" alt="Cover of Study across eight meetings: do ECB days move the euro more?" loading="lazy"></a>
+          <p class="muted" style="margin:6px 0 0;font-size:14.5px">Excel event study on the ECB's own reference rate. Recomputed independently for this page.</p>
+          <div class="doc-links"><a href="ecb-week/files/Sat19Sep_Eight_Meeting_Study.pdf" target="_blank" rel="noopener">Read PDF</a><a href="ecb-week/files/Sat19Sep_Eight_Meeting_Study_data.xlsx">Excel</a><a href="ecb-week/files/Sat19Sep_Eight_Meeting_Study_summary.csv">CSV</a></div></div>
+        <div class="side-date">Saturday 19 September</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills-wall">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">The evidence</span><h2 class="split" style="margin-top:16px">Was this week unusual?</h2></div><p class="reveal">Move on the next day in EUR/USD after each decision, as a multiple of a normal day (average absolute daily move over the prior 60 fixings).</p></div>
+      <div class="evidence">
+        <div class="card reveal">
+          <table class="mini-table">
+            <tr><th>Decision</th><th>Outcome</th><th>Next day</th><th>Ratio</th></tr>
+            <tr><td>30 Oct 2025</td><td>Hold</td><td>+0.03%</td><td>0.12</td></tr>
+            <tr><td>18 Dec 2025</td><td>Hold</td><td>&minus;0.06%</td><td>0.26</td></tr>
+            <tr><td>5 Feb 2026</td><td>Hold</td><td>&minus;0.03%</td><td>0.13</td></tr>
+            <tr><td>19 Mar 2026</td><td>Hold</td><td>+0.57%</td><td>1.93</td></tr>
+            <tr><td>30 Apr 2026</td><td>Hold</td><td>&minus;0.02%</td><td>0.05</td></tr>
+            <tr><td>11 Jun 2026</td><td>Hike</td><td>+0.26%</td><td>0.96</td></tr>
+            <tr><td>23 Jul 2026</td><td>Hold</td><td>&minus;0.13%</td><td>0.63</td></tr>
+            <tr class="hl"><td>10 Sep 2026</td><td>Hike</td><td>&minus;0.21%</td><td>1.04</td></tr>
+          </table>
+        </div>
+        <div class="card reveal d1">
+          <h3>Result: no clear difference</h3>
+          <p>Average ratio 0.64, median 0.44. One decision day in eight passed the 1.5 flag, against 20.6% of all days in the data. The 10 September hike sits at 1.04: an ordinary day.</p>
+          <div class="limits" style="margin-top:18px">
+            <b style="color:var(--text)">Limits.</b> One fixing a day hides intraday moves around 14:15. The window to the next day mixes in other news, such as US data. Eight meetings is a small sample.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills-wall">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">How I built it</span><h2 class="split" style="margin-top:16px">Rules I held every document to.</h2></div></div>
+      <div class="how">
+        <div class="card reveal"><span class="tag">01</span><h3>Public sources only</h3><p>ECB, Eurostat, CFTC, BLS, US Treasury, FRED and national central banks. Every number has a link and an access date.</p></div>
+        <div class="card reveal d1"><span class="tag">02</span><h3>No hindsight</h3><p>Each document uses only what was public on its date. The Thursday morning brief was written before the decision at 14:15 CEST, Frankfurt time, so it does not know the outcome.</p></div>
+        <div class="card reveal d2"><span class="tag">03</span><h3>One fact sheet</h3><p>Every figure lives in a shared fact sheet, verified once and reused exactly, so no two documents disagree.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills-wall">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">Downloads</span><h2 class="split" style="margin-top:16px">Everything behind this page.</h2></div><p class="reveal">Independent portfolio project built from public data. Not investment advice.</p></div>
+      <div class="downloads reveal">
+        <a href="ecb-week/files/Sat05Sep_Central_Bank_Backdrop.pdf" target="_blank" rel="noopener">Central bank backdrop <span>PDF</span></a>
+        <a href="ecb-week/files/Sat05Sep_Weekly_Positioning.pdf" target="_blank" rel="noopener">Positioning, 5 Sep <span>PDF</span></a>
+        <a href="ecb-week/files/Sat05Sep_Weekly_Positioning_data.xlsx">Positioning data, 5 Sep <span>XLSX</span></a>
+        <a href="ecb-week/files/Mon07Sep_Week_Ahead.pdf" target="_blank" rel="noopener">Week ahead and scenarios <span>PDF</span></a>
+        <a href="ecb-week/files/Thu10Sep_Morning_Brief.pdf" target="_blank" rel="noopener">Morning brief <span>PDF</span></a>
+        <a href="ecb-week/files/Thu10Sep_Headlines.pdf" target="_blank" rel="noopener">Five headlines <span>PDF</span></a>
+        <a href="ecb-week/files/Thu10Sep_Evening_Recap.pdf" target="_blank" rel="noopener">Evening recap <span>PDF</span></a>
+        <a href="ecb-week/files/Sat19Sep_Weekly_Positioning.pdf" target="_blank" rel="noopener">Positioning, 19 Sep <span>PDF</span></a>
+        <a href="ecb-week/files/Sat19Sep_Weekly_Positioning_data.xlsx">Positioning data, 19 Sep <span>XLSX</span></a>
+        <a href="ecb-week/files/Sat19Sep_Eight_Meeting_Study.pdf" target="_blank" rel="noopener">Study across eight meetings <span>PDF</span></a>
+        <a href="ecb-week/files/Sat19Sep_Eight_Meeting_Study_data.xlsx">Study workbook <span>XLSX</span></a>
+        <a href="ecb-week/files/Sat19Sep_Eight_Meeting_Study_summary.csv">Study summary <span>CSV</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container pn">
+    <a class="card reveal" href="../projects.html"><small>&larr; All projects</small><h3>Back to the list</h3></a>
+    <a class="card reveal d1" href="snow-pavilion.html"><small>Next project &rarr;</small><h3>Snow Pavilion: Star River</h3></a>
+  </section>
+</main>
+
+<footer>
+  <div class="container foot">
+    <span>&copy; <span data-year>2026</span> Farrel Christian Ariyanto. Designed by me, built with AI, hosted on GitHub.</span>
+    <div class="foot-links">
+      <a href="mailto:Farrel.C.Ariyanto@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/FarrelChristianA" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

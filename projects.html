@@ -42,50 +42,93 @@
   <section class="page-head">
     <div class="container">
       <span class="eyebrow reveal">Projects</span>
-      <h1 class="split" style="margin:18px 0 22px">Work, shown <span class="grad-text">step by step.</span></h1>
-      <p class="lead reveal d1">Every project here follows the same order: the question, the data, the method, the result, and the limits. If a number has no source, it is not on this page.</p>
+      <h1 class="split" style="margin:18px 0 22px">Work you can <span class="grad-text">open and use.</span></h1>
+      <p class="lead reveal d1">A macro case study built from public data, and working tools I built by directing AI. Every tool has a live demo you can try right on its page.</p>
       <div class="filters" data-filter-group="#plist">
         <button class="chip on" data-filter="all">All</button>
         <button class="chip" data-filter="macro">Macro &amp; markets</button>
-        <button class="chip" data-filter="data">Data analysis</button>
+        <button class="chip" data-filter="ai">Built with AI</button>
       </div>
     </div>
   </section>
 
   <section>
     <div class="container project-list" id="plist">
-      <a class="card project-card reveal" data-kind="data" href="projects/sample-project.html">
-        <div class="visual">
-          <span class="sample-flag">Example layout</span>
-          <svg viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="pa" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#2dd4bf" stop-opacity=".35"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></linearGradient>
-              <linearGradient id="pl" x1="0" x2="1"><stop stop-color="#9bf6e6"/><stop offset="1" stop-color="#0f9488"/></linearGradient>
-            </defs>
-            <g stroke="rgba(255,255,255,.06)"><path d="M0 85H600M0 170H600M0 255H600"/><path d="M120 0V340M240 0V340M360 0V340M480 0V340"/></g>
-            <path d="M0 250 L60 232 L120 240 L180 200 L240 214 L300 160 L360 176 L420 128 L480 140 L540 96 L600 104 L600 340 L0 340Z" fill="url(#pa)"/>
-            <path class="draw" d="M0 250 L60 232 L120 240 L180 200 L240 214 L300 160 L360 176 L420 128 L480 140 L540 96 L600 104" fill="none" stroke="url(#pl)" stroke-width="3"/>
-            <g fill="#0d1012" stroke="#7af0dc" stroke-width="2"><circle cx="300" cy="160" r="6"/><circle cx="540" cy="96" r="6"/></g>
-          </svg>
+      <div class="section-label reveal" data-kind="macro"><h2>Case study</h2><span class="line"></span><span class="pill">Project 01</span></div>
+      <a class="card project-card reveal" data-kind="macro" href="projects/ecb-week.html">
+        <div class="visual" style="padding:22px;display:flex;align-items:center;justify-content:center">
+          <img src="projects/ecb-week/covers/Thu10Sep_Evening_Recap_cover.jpg" alt="Cover of the evening recap" style="width:100%;height:auto;border-radius:10px;border:1px solid rgba(255,255,255,0.08)">
         </div>
         <div class="body">
-          <div class="meta"><span class="pill hot">Sample</span><span class="pill">Excel</span><span class="pill">SQL</span><span class="pill">Public data</span></div>
-          <h3>Sample project: how a case study will read</h3>
-          <p class="muted">A placeholder that shows the layout of a finished project page. The chart and text are examples, not results. The first real case study is in progress.</p>
+          <div class="meta"><span class="pill hot">Case study</span><span class="pill">Macro</span><span class="pill">Excel</span><span class="pill">Public data</span></div>
+          <h3>Why did the ECB's hike barely move the euro?</h3>
+          <p class="muted">One decision week, followed from the Saturday before to the Saturday after: positioning, scenarios, a morning brief, headlines, an evening recap, and a study across eight meetings that tests whether the week was normal.</p>
           <div class="facts">
-            <div><span>Tools</span><b>Excel, SQL</b></div>
-            <div><span>Data</span><b>Public sources</b></div>
-            <div><span>Status</span><b>Example</b></div>
+            <div><span>Documents</span><b>8, dated</b></div>
+            <div><span>Tools</span><b>Excel</b></div>
+            <div><span>Result</span><b>Priced in</b></div>
           </div>
-          <span class="link-arrow">Open the sample page <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          <span class="link-arrow">Open the case study <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </div>
       </a>
 
-      <div class="card ghost-card reveal d1" data-kind="macro">
-        <span class="eyebrow">Coming next</span>
-        <h3 style="margin-top:14px;font-size:24px">One central bank week, followed from start to finish</h3>
-        <p class="muted">Positioning before the meeting, scenarios written ahead of the decision, the headlines that followed, and a test across several meetings. Built only from public data.</p>
-      </div>
+      <div class="section-label reveal" data-kind="ai"><h2>Built with AI</h2><span class="line"></span><span class="pill">Every tool has a live demo</span></div>
+      <p class="muted reveal" data-kind="ai" style="max-width:760px;margin:0 0 6px">I have no coding background. These are tools I needed in my own life, built in 2026 by directing AI: I write the specs and the rules, AI writes the code, and I test every change. Each page tells the story behind the tool and runs a limited demo with dummy data.</p>
+      <a class="card project-card reveal" data-kind="ai" href="projects/snow-pavilion.html">
+        <div class="visual cover"><img src="assets/projects/snow-pavilion/cover.webp" alt="Snow Pavilion: Star River cover" loading="lazy"></div>
+        <div class="body">
+          <div class="meta"><span class="pill hot live-dot">Live demo</span><span class="pill">Python</span><span class="pill">Flask</span><span class="pill">SQLite</span><span class="pill">AI chat</span></div>
+          <span class="mono" style="font-size:12px;color:var(--faint)">PROJECT 02</span>
+          <h3 style="margin-top:6px">Snow Pavilion: Star River</h3>
+          <p class="muted">A trading dashboard that runs on my own computer: screener, positions, journal, an AI chat that only uses live data, and hard risk limits.</p>
+          <div class="facts" style="grid-template-columns:1fr"><div><span>Why I built it</span><b>I was opening six websites for every trading session. Now it is one screen.</b></div></div>
+          <span class="link-arrow">Open and try it <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="card project-card reveal" data-kind="ai" href="projects/ai-job-screener.html">
+        <div class="visual cover"><img src="assets/projects/ai-job-screener/cover.webp" alt="AI Job Screener cover" loading="lazy"></div>
+        <div class="body">
+          <div class="meta"><span class="pill hot live-dot">Live demo</span><span class="pill">Python</span><span class="pill">Streamlit</span><span class="pill">AI scoring</span><span class="pill">Claude</span></div>
+          <span class="mono" style="font-size:12px;color:var(--faint)">PROJECT 03</span>
+          <h3 style="margin-top:6px">AI Job Screener</h3>
+          <p class="muted">Collects postings from LinkedIn and Jobstreet, scores each one against my profile with AI, and tracks every application.</p>
+          <div class="facts" style="grid-template-columns:1fr"><div><span>Why I built it</span><b>After graduating I was checking job boards every day. This does the reading first.</b></div></div>
+          <span class="link-arrow">Open and try it <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="card project-card reveal" data-kind="ai" href="projects/macro-master.html">
+        <div class="visual cover"><img src="assets/projects/macro-master/cover.webp" alt="Macro Master cover" loading="lazy"></div>
+        <div class="body">
+          <div class="meta"><span class="pill hot live-dot">Live demo</span><span class="pill">Macro</span><span class="pill">Charts</span><span class="pill">AI tutor</span><span class="pill">Live demo</span></div>
+          <span class="mono" style="font-size:12px;color:var(--faint)">PROJECT 04</span>
+          <h3 style="margin-top:6px">Macro Master</h3>
+          <p class="muted">A learning workspace that shows how the Fed, inflation, liquidity, bonds and crypto connect, with an AI tutor and a live market tape.</p>
+          <div class="facts" style="grid-template-columns:1fr"><div><span>Why I built it</span><b>The markets course gave me the pieces. I wanted one place that connects them.</b></div></div>
+          <span class="link-arrow">Open and try it <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="card project-card reveal" data-kind="ai" href="projects/ledgerline.html">
+        <div class="visual cover"><img src="assets/projects/ledgerline/cover.webp" alt="Ledgerline cover" loading="lazy"></div>
+        <div class="body">
+          <div class="meta"><span class="pill hot live-dot">Live demo</span><span class="pill">Finance</span><span class="pill">Quick add</span><span class="pill">6 themes</span><span class="pill">Live demo</span></div>
+          <span class="mono" style="font-size:12px;color:var(--faint)">PROJECT 05</span>
+          <h3 style="margin-top:6px">Ledgerline</h3>
+          <p class="muted">A money app built around payday: log spending in plain words, see one number for what is left today, six themes.</p>
+          <div class="facts" style="grid-template-columns:1fr"><div><span>Why I built it</span><b>Running the shop's cash every day made me want the same clarity for my own money.</b></div></div>
+          <span class="link-arrow">Open and try it <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="card project-card reveal" data-kind="ai" href="projects/flow-dashboard.html">
+        <div class="visual cover"><img src="assets/projects/flow-dashboard/cover.webp" alt="Flow Dashboard cover" loading="lazy"></div>
+        <div class="body">
+          <div class="meta"><span class="pill hot live-dot">Live demo</span><span class="pill">Productivity</span><span class="pill">No account</span><span class="pill">Mac app</span><span class="pill">Live demo</span></div>
+          <span class="mono" style="font-size:12px;color:var(--faint)">PROJECT 06</span>
+          <h3 style="margin-top:6px">Flow Dashboard</h3>
+          <p class="muted">Tasks, calendar, habits and a focus timer around one timeline of the day. Runs in the browser, plus a small Mac app.</p>
+          <div class="facts" style="grid-template-columns:1fr"><div><span>Why I built it</span><b>Work, the shop, study and side projects. I needed to see the whole day at once.</b></div></div>
+          <span class="link-arrow">Open and try it <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
     </div>
   </section>
 
@@ -93,7 +136,7 @@
 
 <footer>
   <div class="container foot">
-    <span>&copy; <span data-year>2026</span> Farrel Christian Ariyanto. Hand-built, hosted on GitHub.</span>
+    <span>&copy; <span data-year>2026</span> Farrel Christian Ariyanto. Designed by me, built with AI, hosted on GitHub.</span>
     <div class="foot-links">
       <a href="mailto:Farrel.C.Ariyanto@gmail.com">Email</a>
       <a href="https://www.linkedin.com/in/farrel-christian-ariyanto" target="_blank" rel="noopener">LinkedIn</a>
