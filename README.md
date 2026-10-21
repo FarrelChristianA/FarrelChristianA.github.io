@@ -11,11 +11,11 @@ Industrial Engineer working in macro and market research, moving into data analy
 | # | Project | What it shows | Status |
 |---|---|---|---|
 | 01 | [Why did the ECB's hike barely move the euro?](projects/ecb-week/) | One central bank decision week followed from the Saturday before to the Saturday after: positioning, scenarios, a morning brief, headlines, an evening recap, and an Excel event study across eight ECB meetings | Done |
-| 02 | [Snow Pavilion: Star River](projects/snow-pavilion.html) | Local-first crypto trading dashboard built by directing AI: screener, journal, grounded AI chat, Risk Guard. Live web demo | Done |
+| 02 | [Trading Dashboard](projects/snow-pavilion.html) | Trading dashboard that runs on my own computer, built by directing AI: screener, journal, AI chat grounded in live data, Risk Guard. Live web demo | Done |
 | 03 | [AI Job Screener](projects/ai-job-screener.html) | Collects LinkedIn and Jobstreet postings, scores them with AI, tracks applications. Live web demo | Done |
 | 04 | [Macro Master](projects/macro-master.html) | Macro learning workspace with search, SVG charts and an AI tutor. Live demo | Done |
-| 05 | [Ledgerline](projects/ledgerline.html) | Personal-finance app around payday budgets, six themes. Live demo | Done |
-| 06 | [Flow Dashboard](projects/flow-dashboard.html) | Local-first productivity dashboard with a daily timeline. Live demo | Done |
+| 05 | [Ledgerline](projects/ledgerline.html) | Personal finance app built around payday budgets, six themes. Live demo | Done |
+| 06 | [Flow Dashboard](projects/flow-dashboard.html) | Productivity dashboard that runs in the browser with a daily timeline. Live demo | Done |
 
 Projects 02 to 06 were designed and directed by me and built with AI (no coding background). Each has its own repository and a live demo with fictional data under `demos/`.
 
