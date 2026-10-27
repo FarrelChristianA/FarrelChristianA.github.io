@@ -1061,3 +1061,78 @@ footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
   .pn a { min-height: 88px; }
   .gx-bar .htl-nav .g-btn { width: 38px; height: 38px; }
 }
+
+/* =========================================================
+   V4b: more colour, background texture and ornaments
+   (keeps the original design)
+   ========================================================= */
+:root { --violet: #8b7cf6; --cyan: #38bdf8; }
+.ambient {
+  background:
+    radial-gradient(900px 600px at 6% -8%, rgba(45, 212, 191, 0.20), transparent 60%),
+    radial-gradient(760px 520px at 104% 14%, rgba(139, 124, 246, 0.14), transparent 62%),
+    radial-gradient(900px 640px at 50% 118%, rgba(56, 189, 248, 0.10), transparent 60%),
+    linear-gradient(180deg, #0a0d0f 0%, #060708 55%, #030404 100%);
+}
+/* dotted texture on the pitch black bands */
+.demo-sec, .pipeline, .cta, .skills-wall, .p-sec:has(.gallery) {
+  background-image: radial-gradient(rgba(122, 240, 220, 0.09) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  background-color: #000;
+}
+/* eyebrow line goes teal to violet */
+.eyebrow::before { background: linear-gradient(90deg, var(--teal-2), var(--violet)); }
+/* card top highlight */
+.card { background-image: linear-gradient(90deg, transparent, rgba(122,240,220,.35), rgba(139,124,246,.30), transparent), linear-gradient(180deg, rgba(14,17,18,0.92), rgba(5,6,7,0.94)); background-size: 100% 1px, 100% 100%; background-repeat: no-repeat; }
+
+/* ornaments (inserted by main.js) */
+.orn { position: absolute; pointer-events: none; z-index: 0; }
+.orn-rings { width: clamp(260px, 34vw, 520px); aspect-ratio: 1; right: -6vw; top: 70px; opacity: .55; animation: ornSpin 90s linear infinite; }
+.orn-rings svg { width: 100%; height: 100%; }
+.orn-dots { width: 220px; height: 140px; left: 2vw; bottom: 20px; opacity: .5;
+  background-image: radial-gradient(rgba(139,124,246,.55) 1.2px, transparent 1.6px); background-size: 14px 14px;
+  -webkit-mask-image: radial-gradient(closest-side, #000, transparent); mask-image: radial-gradient(closest-side, #000, transparent); }
+.orn-plus { width: 14px; height: 14px; opacity: .6; }
+.orn-plus::before, .orn-plus::after { content: ""; position: absolute; background: var(--teal-1); }
+.orn-plus::before { left: 6px; top: 0; width: 2px; height: 14px; }
+.orn-plus::after { top: 6px; left: 0; width: 14px; height: 2px; }
+.orn-p1 { left: 46%; top: 120px; } .orn-p2 { right: 12%; bottom: 60px; opacity: .35; }
+@keyframes ornSpin { to { transform: rotate(360deg); } }
+.hero > .container, .page-head > .container, .p-hero > .container { position: relative; z-index: 1; }
+.page-head, .p-hero { position: relative; overflow: hidden; }
+/* section heading ornament: small diamond after the eyebrow line */
+.section-head .eyebrow::after { content: ""; width: 6px; height: 6px; transform: rotate(45deg); border: 1px solid var(--violet); margin-left: 4px; opacity: .8; }
+@media (max-width: 760px) { .orn-rings { right: -30vw; top: 90px; opacity: .35; } .orn-dots, .orn-p1 { display: none; } }
+@media (prefers-reduced-motion: reduce) { .orn-rings { animation: none; } }
+
+/* =========================================================
+   PERF: lighter, smoother scrolling
+   ========================================================= */
+.aurora, .spotlight, .cursor-ring, .grid-lines { display: none !important; }
+.card::before { animation: none; }
+.card:hover::before { animation: spin 4s linear infinite; }
+.card .glow { display: none; }
+.grad-text { animation: none; }
+.hero h1 .grad-text { animation: holo 9s linear infinite; }
+.nav { backdrop-filter: blur(10px) saturate(130%); -webkit-backdrop-filter: blur(10px) saturate(130%); }
+.ambient::after { display: none; }
+.orn-rings { will-change: transform; }
+.band-track { will-change: transform; }
+/* spacing rhythm fixes */
+.cta { margin-top: 0; padding: 90px 0 100px; }
+.bento { padding-bottom: 80px; }
+.tool-rail { scrollbar-width: thin; scrollbar-color: rgba(45,212,191,.35) transparent; }
+.tool-rail::-webkit-scrollbar { height: 6px; } .tool-rail::-webkit-scrollbar-thumb { background: rgba(45,212,191,.35); border-radius: 6px; }
+@media (max-width: 640px) {
+  .gx-item { height: 52px; gap: 9px; padding: 0 10px 0 6px; border-radius: 14px; }
+  .gx-ico { width: 36px; height: 36px; border-radius: 11px; }
+  .gx-ico svg { width: 19px; height: 19px; }
+  .gx-txt b { font-size: 13.5px; } .gx-txt span { font-size: 11px; }
+  .gx-year span { font-size: 17px; top: 10px; left: 6px; }
+}
+@media (max-width: 760px) {
+  .portrait { max-width: none; }
+  .bio-side .portrait.has-photo { aspect-ratio: 4 / 4.4; }
+  .chapter .num { font-size: 76px; letter-spacing: -3px; top: -4px; opacity: .55; }
+  .chapter .eyebrow { padding-right: 96px; }
+}

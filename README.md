@@ -2,7 +2,7 @@
 
 Industrial Engineer working in macro and market research, moving into data analysis. This repository is the source of my portfolio website.
 
-**Live site:** [farrelchristian.vercel.app](https://farrelchristian.vercel.app) (preview while the repository is private)
+**Live site:** [farrelchristiana.github.io](https://farrelchristiana.github.io) 
 
 **LinkedIn:** [linkedin.com/in/farrel-christian-ariyanto](https://www.linkedin.com/in/farrel-christian-ariyanto)
 

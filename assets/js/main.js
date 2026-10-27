@@ -30,21 +30,7 @@
   var links = document.querySelector(".nav-links");
   if (toggle && links) toggle.addEventListener("click", function () { links.classList.toggle("open"); });
 
-  /* ---------- cursor spotlight + card glow ---------- */
-  if (!reduce) {
-    window.addEventListener("pointermove", function (e) {
-      doc.style.setProperty("--mx", e.clientX + "px");
-      doc.style.setProperty("--my", e.clientY + "px");
-    }, { passive: true });
-    document.querySelectorAll(".card").forEach(function (card) {
-      var g = document.createElement("span"); g.className = "glow"; card.appendChild(g);
-      card.addEventListener("pointermove", function (e) {
-        var r = card.getBoundingClientRect();
-        card.style.setProperty("--gx", (e.clientX - r.left) + "px");
-        card.style.setProperty("--gy", (e.clientY - r.top) + "px");
-      });
-    });
-  }
+  /* (cursor spotlight and card glow removed for speed) */
 
   /* ---------- scroll progress + timeline fill ---------- */
   var bar = document.querySelector(".progress");
@@ -58,7 +44,8 @@
       tl.style.setProperty("--fill", Math.max(0, Math.min(1, p)).toFixed(3));
     }
   }
-  window.addEventListener("scroll", onScroll, { passive: true });
+  var sTick = false;
+  window.addEventListener("scroll", function () { if (sTick) return; sTick = true; requestAnimationFrame(function () { sTick = false; onScroll(); reveal(); }); }, { passive: true });
   onScroll();
 
   /* ---------- split headline words ---------- */
@@ -92,7 +79,6 @@
       return true;
     });
   }
-  window.addEventListener("scroll", reveal, { passive: true });
   window.addEventListener("resize", reveal);
   window.addEventListener("load", reveal);
   requestAnimationFrame(function () { requestAnimationFrame(reveal); });
@@ -172,7 +158,7 @@
 
   /* ---------- hero canvas: drifting market-style lines ---------- */
   var cv = document.querySelector(".hero-canvas");
-  if (cv && !reduce && cv.getContext) {
+  if (cv && !reduce && cv.getContext && cv.getContext("2d")) {
     var ctx = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1);
     var W = 0, H = 0, lines = [], running = true, raf = 0;
     function clampY(y) { return Math.max(H * 0.12, Math.min(H * 0.88, y)); }
@@ -228,7 +214,7 @@
 
   /* ---------- cursor ring (mouse only) ---------- */
   var ring = document.querySelector(".cursor-ring");
-  if (ring && finePointer && !reduce) {
+  if (false) {
     var tx = -100, ty = -100, cx = -100, cy = -100;
     window.addEventListener("pointermove", function (e) { tx = e.clientX; ty = e.clientY; ring.classList.add("on"); }, { passive: true });
     document.addEventListener("pointerleave", function () { ring.classList.remove("on"); });
@@ -426,7 +412,7 @@
   };
   function svg(k) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + ICONS[k] + "</svg>"; }
   var M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var NOW = "2026-10", START = "2021-07", END = "2027-01", MW = 44, PADL = 30, LANE = 74, TOP = 74;
+  var SMALL = window.innerWidth < 640, NOW = "2026-10", START = "2021-07", END = "2027-01", MW = SMALL ? 22 : 44, PADL = SMALL ? 16 : 30, LANE = SMALL ? 66 : 74, TOP = SMALL ? 62 : 74, MINW = SMALL ? 170 : 196;
   function idx(ym) { var p = ym.split("-"); var s = START.split("-"); return (p[0] - s[0]) * 12 + (p[1] - s[1]); }
   function lbl(ym) { var p = ym.split("-"); return M[+p[1] - 1] + " " + p[0]; }
   function dur(a, b) { var n = idx(b) - idx(a) + 1, y = Math.floor(n / 12), m = n % 12; return (y ? y + (y > 1 ? " yrs" : " yr") : "") + (y && m ? " " : "") + (m ? m + (m > 1 ? " mos" : " mo") : ""); }
@@ -445,13 +431,13 @@
   var lanes = [], items = data.slice().sort(function (a, b) { return idx(a.s) - idx(b.s); });
   items.forEach(function (it) {
     var e = it.e || NOW, x0 = PADL + idx(it.s) * MW + (it.ms ? 6 : 0), real = (idx(e) - idx(it.s) + 1) * MW - 4;
-    var vis = it.ms ? 170 : Math.max(real, 196);
+    var vis = it.ms ? 150 : Math.max(real, MINW);
     it._x = x0; it._w = it.ms ? 0 : real; it._end = x0 + vis + 10;
     for (var L = 0; L < 20; L++) { if (!lanes[L] || lanes[L] <= x0) { lanes[L] = it._end; it._lane = L; break; } }
   });
   items.forEach(function (it, n) {
     var top = TOP + it._lane * LANE;
-    var w = it.ms ? "" : "width:" + Math.max(it._w, 196) + "px;";
+    var w = it.ms ? "" : "width:" + Math.max(it._w, MINW) + "px;";
     var cls = "gx-item k-" + it.kind + (it.e ? "" : " live") + (it.ms ? " ms" : "");
     html += '<div class="' + cls + '" data-id="' + it.id + '" role="button" tabindex="0" style="left:' + it._x + "px;top:" + top + "px;" + w + "transition-delay:" + (n * 0.07) + 's,' + (n * 0.07) + 's,0s,0s,0s"><span class="gx-ico">' + svg(it.icon) + '</span><span class="gx-txt"><b>' + it.t + "</b><span>" + it.o + "</span></span></div>";
   });
@@ -498,4 +484,21 @@
   function check() { var r = gx.getBoundingClientRect(); if (r.top < window.innerHeight * 0.9) { gx.classList.add("in"); window.removeEventListener("scroll", check); } }
   window.addEventListener("scroll", check, { passive: true }); setTimeout(check, 200);
   select(order[0], false);
+})();
+
+/* ===== V4b ornaments: rings, dots and plus marks in the page heads ===== */
+(function () {
+  "use strict";
+  var rings = '<svg viewBox="0 0 200 200" fill="none"><defs><linearGradient id="ornG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7af0dc"/><stop offset="1" stop-color="#8b7cf6"/></linearGradient></defs>' +
+    '<circle cx="100" cy="100" r="96" stroke="url(#ornG)" stroke-opacity=".35" stroke-width=".6"/>' +
+    '<circle cx="100" cy="100" r="78" stroke="url(#ornG)" stroke-opacity=".25" stroke-width=".6" stroke-dasharray="2 6"/>' +
+    '<circle cx="100" cy="100" r="58" stroke="url(#ornG)" stroke-opacity=".3" stroke-width=".6"/>' +
+    '<path d="M100 4 A96 96 0 0 1 196 100" stroke="#7af0dc" stroke-opacity=".9" stroke-width="1.4" stroke-linecap="round"/>' +
+    '<circle cx="196" cy="100" r="3" fill="#9bf6e6"/><circle cx="42" cy="100" r="2" fill="#8b7cf6"/></svg>';
+  document.querySelectorAll(".hero, .page-head, .p-hero").forEach(function (sec) {
+    if (sec.querySelector(".orn")) return;
+    var r = document.createElement("div"); r.className = "orn orn-rings"; r.setAttribute("aria-hidden", "true"); r.innerHTML = rings; sec.appendChild(r);
+    var d = document.createElement("div"); d.className = "orn orn-dots"; d.setAttribute("aria-hidden", "true"); sec.appendChild(d);
+    ["orn-p1", "orn-p2"].forEach(function (c) { var p = document.createElement("span"); p.className = "orn orn-plus " + c; p.setAttribute("aria-hidden", "true"); sec.appendChild(p); });
+  });
 })();
