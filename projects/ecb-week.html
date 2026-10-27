@@ -52,6 +52,7 @@
         <div class="card reveal d3"><div class="lbl">Study across eight meetings</div><div class="big grad-text">0.64</div><p>Average reaction as a multiple of a normal day. No clear effect on decision days.</p></div>
       </div>
       <p class="short reveal">The short answer: the hike was news to nobody. Funds were only mildly short the euro, the guidance did not change, and US data landed fifteen minutes after the decision. Across eight ECB meetings, decision days did not move the euro more than ordinary days.</p>
+      <a class="lab-jump reveal" href="#lab">Run the analysis yourself in the interactive lab <span aria-hidden="true">&darr;</span></a>
     </div>
   </section>
 
@@ -127,6 +128,88 @@
       </div>
     </div>
   </section>
+
+  <!-- ECB_LAB_START -->
+  <section class="skills-wall lab-wrap" id="lab">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow reveal">Interactive lab</span><h2 class="split" style="margin-top:16px">Run the analysis yourself.</h2></div><p class="reveal">Same public data as the documents: ECB reference rates, the ECB's projections and CFTC positioning. Change an input and the result is recalculated in your browser.</p></div>
+      <div class="lab card reveal" id="ecbLab">
+        <div class="lab-tabs" role="tablist" aria-label="Lab tools">
+          <button type="button" role="tab" data-t="scn" class="on"><span>01</span>Call the scenario</button>
+          <button type="button" role="tab" data-t="fx"><span>02</span>Replay the euro</button>
+          <button type="button" role="tab" data-t="st"><span>03</span>Test the study</button>
+          <button type="button" role="tab" data-t="pos"><span>04</span>Positioning</button>
+        </div>
+
+        <div class="lab-panel" data-p="scn" id="labScn">
+          <p class="lab-intro">On Monday 7 September I wrote down thresholds for the decision before anything happened. Set the inputs the way you think the ECB will land, or load what it actually announced, and the rules call the scenario.</p>
+          <div class="lab-presets"><span>Load</span><button type="button" class="chip" data-preset="june">June baseline</button><button type="button" class="chip" data-preset="actual">What the ECB announced on 10 Sep</button></div>
+          <div class="scn-grid">
+            <div class="scn-inputs">
+              <div class="fld"><label>Rate move</label><div class="seg"><button type="button" data-k="rate" data-v="0">Hold</button><button type="button" data-k="rate" data-v="25">+25bp</button><button type="button" data-k="rate" data-v="50">+50bp</button></div></div>
+              <div class="fld"><label>Guidance wording</label><div class="seg"><button type="button" data-k="guid" data-v="pause">Signals a pause</button><button type="button" data-k="guid" data-v="same">Unchanged</button><button type="button" data-k="guid" data-v="hike">Another hike</button></div></div>
+              <div class="fld"><label for="lab_h27">2027 headline inflation <small>June: 2.3%</small></label><div class="rng"><input type="range" id="lab_h27" min="1.8" max="3.0" step="0.1"><b id="lab_h27_v"></b></div></div>
+              <div class="fld"><label for="lab_c27">2027 core inflation <small>June: 2.5%</small></label><div class="rng"><input type="range" id="lab_c27" min="2.0" max="3.0" step="0.1"><b id="lab_c27_v"></b></div></div>
+              <div class="fld"><label for="lab_g26">GDP growth 2026 <small>June: 0.8%</small></label><div class="rng"><input type="range" id="lab_g26" min="0.4" max="1.4" step="0.1"><b id="lab_g26_v"></b></div></div>
+              <div class="fld"><label for="lab_g27">GDP growth 2027 <small>June: 1.2%</small></label><div class="rng"><input type="range" id="lab_g27" min="0.8" max="1.8" step="0.1"><b id="lab_g27_v"></b></div></div>
+            </div>
+            <div class="scn-out">
+              <div class="scn-result" id="scnResult"><div class="scn-letter" id="scnLetter">C</div><div><span class="lbl">Scenario</span><b id="scnName"></b><p id="scnWhy"></p></div></div>
+              <div class="tw"><table class="scn-rules">
+                <tr><th>Signal</th><th class="cb">B: weaker euro</th><th class="cc">C: in between</th><th class="ca">A: stronger euro</th><th>Reads</th></tr>
+                <tr data-row="rate"><td>Rate move</td><td data-c="B">Hold</td><td data-c="C">25bp</td><td data-c="A">More than 25bp</td><td class="rd"></td></tr>
+                <tr data-row="guid"><td>Guidance</td><td data-c="B">Signals a pause</td><td data-c="C">June sentence unchanged</td><td data-c="A">Points to another hike</td><td class="rd"></td></tr>
+                <tr data-row="h27"><td>2027 headline</td><td data-c="B">2.1% or lower</td><td data-c="C">2.2% to 2.4%</td><td data-c="A">2.5% or higher</td><td class="rd"></td></tr>
+                <tr data-row="c27"><td>2027 core</td><td data-c="B">2.3% or lower</td><td data-c="C">2.4% to 2.6%</td><td data-c="A">2.7% or higher</td><td class="rd"></td></tr>
+                <tr data-row="gdp"><td>GDP 2026 or 2027</td><td data-c="B">Either cut 0.2 or more</td><td data-c="C">Both within 0.1</td><td data-c="A">Either raised 0.2 or more</td><td class="rd"></td></tr>
+              </table></div>
+              <p class="lab-foot">Rule, as written on Monday: a rate move or wording in column A or B decides on its own. With 25bp and unchanged wording, two projection rows in the same outer column call A or B. Anything else is C.</p>
+              <p class="scn-after" id="scnAfter" hidden><b>What happened next.</b> By the rules the day read as A, a hawkish tilt inside an expected hike. Yet the euro fixed 0.21% lower the next day (1.1616 to 1.1592), and US producer prices landed 15 minutes after the decision. One fixing a day cannot separate the ECB from the US data released in the same window.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-panel" data-p="fx" id="labFx" hidden>
+          <p class="lab-intro">EUR/USD, ECB reference rate, every fixing from 1 Jul 2025 to 18 Sep 2026. Pick a meeting to see what was expected, what the euro did next and how that compares with a normal day.</p>
+          <div class="mt-chips" id="mtChips"></div>
+          <div class="chart-box"><div id="fxChart" class="chart"></div><div class="tip" id="fxTip" hidden></div></div>
+          <div class="lab-row"><span class="legend"><i class="hike"></i>Hike <i class="hold"></i>Hold <i class="nx"></i>Next fixing</span><button type="button" class="lab-btn" id="fxZoom">Zoom in on this meeting</button></div>
+          <div class="mt-detail" id="mtDetail"></div>
+        </div>
+
+        <div class="lab-panel" data-p="st" id="labStudy" hidden>
+          <p class="lab-intro">The study asks one question: does the euro move more after an ECB decision than on a normal day? Change how a normal day is measured and where the flag line sits. The benchmark uses the same rule on every day in the data.</p>
+          <div class="st-ctrl">
+            <div class="fld"><label>Normal day = average move over the prior</label><div class="seg"><button type="button" data-win="20">20</button><button type="button" data-win="40">40</button><button type="button" data-win="60">60</button><button type="button" data-win="80">80</button></div><small class="muted">fixings</small></div>
+            <div class="fld"><label for="thr">Flag a day when its move is above</label><div class="rng"><input type="range" id="thr" min="1.0" max="2.5" step="0.1"><b id="thrV"></b></div><small class="muted">a normal day</small></div>
+          </div>
+          <div class="chart-box"><div id="studyChart" class="chart"></div></div>
+          <div class="st-stats">
+            <div><span>Average ratio, 8 decisions</span><b id="stAvg"></b></div>
+            <div><span>Median ratio</span><b id="stMed"></b></div>
+            <div><span>Decision days above the line</span><b id="stDec"></b></div>
+            <div><span>All days above the line</span><b id="stAll"></b><small id="stAllN"></small></div>
+          </div>
+          <p class="st-verdict" id="stVerdict"></p>
+          <p class="lab-foot"><span id="stDefault">These are the settings used in the study PDF and workbook: 60 fixings and a 1.5 line. </span><button type="button" class="linkish" id="stReset">Reset to the study settings</button></p>
+        </div>
+
+        <div class="lab-panel" data-p="pos" id="labPos" hidden>
+          <p class="lab-intro">CFTC positioning in euro futures, every Tuesday from 26 May to 15 Sep 2026. Below zero means the group is net short the euro.</p>
+          <div class="lab-row"><div class="seg"><button type="button" data-cat="lf">Leveraged funds</button><button type="button" data-cat="am">Asset managers</button><button type="button" data-cat="dl">Dealers</button></div><div class="seg"><button type="button" data-unit="n">Contracts</button><button type="button" data-unit="p">% of open interest</button></div></div>
+          <div class="chart-box"><div id="posChart" class="chart"></div></div>
+          <p class="pos-note" id="posNote"></p>
+          <div class="cur-box">
+            <h4>Leveraged funds across currencies, 1 Sep 2026 <small>net as % of open interest</small></h4>
+            <div id="curChart"></div>
+            <p class="lab-foot">The euro short was mild: 4.4% of open interest, against 24.8% for the yen. Contract sizes differ, so currencies are compared on % of open interest.</p>
+          </div>
+        </div>
+        <p class="lab-src">Sources: ECB Data Portal (EXR.D.USD.EUR.SP00.A), ECB monetary policy decisions of 11 Jun and 10 Sep 2026, ECB meeting accounts, CFTC Traders in Financial Futures (Euro FX 099741 and six other CME currency contracts). Accessed 19 to 21 Oct 2026.</p>
+      </div>
+    </div>
+  </section>
+  <!-- ECB_LAB_END -->
 
   <section class="skills-wall">
     <div class="container">
@@ -204,5 +287,6 @@
   </div>
 </footer>
 <script src="../assets/js/main.js"></script>
+<script src="../assets/js/ecb-lab.js" defer></script>
 </body>
 </html>

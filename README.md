@@ -1,6 +1,6 @@
 # Farrel Christian Ariyanto
 
-Industrial Engineer working in macro and market research, moving into data analysis. This repository is the source of my portfolio website.
+Industrial Engineer working in macro and market research, building practical tools with AI. This repository is the source of my portfolio website.
 
 **Live site:** [farrelchristiana.github.io](https://farrelchristiana.github.io) 
 
@@ -10,14 +10,14 @@ Industrial Engineer working in macro and market research, moving into data analy
 
 | # | Project | What it shows | Status |
 |---|---|---|---|
-| 01 | [Why did the ECB's hike barely move the euro?](projects/ecb-week/) | One central bank decision week followed from the Saturday before to the Saturday after: positioning, scenarios, a morning brief, headlines, an evening recap, and an Excel event study across eight ECB meetings | Done |
-| 02 | [Trading Dashboard](projects/snow-pavilion.html) | Trading dashboard that runs on my own computer, built by directing AI: screener, journal, AI chat grounded in live data, Risk Guard. Live web demo | Done |
+| 01 | [Why did the ECB's hike barely move the euro?](projects/ecb-week/) | One central bank decision week followed from the Saturday before to the Saturday after: positioning, scenarios, a morning brief, headlines, an evening recap, and an Excel event study across eight ECB meetings, plus an interactive lab to call the scenario and test the study in the browser | Done |
+| 02 | [Trading Dashboard](projects/snow-pavilion.html) | Trading dashboard that runs on my own computer, built by directing AI: screener, journal, AI chat grounded in live data, Risk Guard. Live web demo with paper trading and a guided tour | Done |
 | 03 | [AI Job Screener](projects/ai-job-screener.html) | Collects LinkedIn and Jobstreet postings, scores them with AI, tracks applications. Live web demo | Done |
-| 04 | [Macro Master](projects/macro-master.html) | Macro learning workspace with search, SVG charts and an AI tutor. Live demo | Done |
+| 04 | [Macro Master](projects/macro-master.html) | Macro learning workspace with search, SVG charts and an AI tutor, plus a Release Lab and a quiz in the web demo | Done |
 | 05 | [Ledgerline](projects/ledgerline.html) | Personal finance app built around payday budgets, six themes. Live demo | Done |
-| 06 | [Flow Dashboard](projects/flow-dashboard.html) | Productivity dashboard that runs in the browser with a daily timeline. Live demo | Done |
+| 06 | [Flow Dashboard](projects/flow-dashboard.html) | Productivity dashboard that runs in the browser with a daily timeline and Plan my day. Live demo | Done |
 
-Projects 02 to 06 were designed and directed by me and built with AI (no coding background). Each has its own repository and a live demo with fictional data under `demos/`.
+Projects 02 to 06 were designed and directed by me and built with AI (no coding background). Each has its own repository and a live demo with fictional data and a guided tour under `demos/`.
 
 ## How I work
 
@@ -30,8 +30,7 @@ Projects 02 to 06 were designed and directed by me and built with AI (no coding 
 - `index.html`, `projects.html`, `cv.html`, `bio.html`: site pages
 - `projects/`: one page per project; `projects/ecb-week/` holds the case study PDFs, Excel files and covers
 - `demos/`: live web demos of projects 02 to 06 (fictional data, nothing saved)
-- `assets/`: styles, scripts, images, project screenshots (`assets/projects/`) and downloadable CVs (`assets/cv/`)
-- `data/`, `sql/`: reserved for upcoming projects
+- `assets/`: styles, scripts (`assets/js/ecb-lab.js` runs the case study lab), images, project screenshots (`assets/projects/`) and downloadable CVs (`assets/cv/`)
 
 Plain HTML, CSS and JavaScript. No framework, no build step. Designed by me, built with AI.
 

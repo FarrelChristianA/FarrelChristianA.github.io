@@ -43,6 +43,20 @@ window.__DEMO__ = {"GET /api/autosave/status":{"auto_triggered":[],"history":{"e
     var path = a.pathname.replace(/^.*?(\/api\/)/, '/api/'), q = a.search; curPath = path;
     if (url.indexOf('/api/') === -1) return real ? real(input, opts) : res({});
     var k = m + ' ' + path + q;
+    if (path === '/api/news/ask') {
+      var qq = ''; try { qq = (JSON.parse(opts.body).question || '').toLowerCase(); } catch(e) {}
+      var px = function(sym){ var t = D['GET /api/bybit/ticker?symbols=' + sym]; var v = t && t.data && t.data[sym]; return v ? (v.last * wob(sym)) : null; };
+      var fmt = function(v){ return v == null ? 'n/a' : '$' + v.toLocaleString(undefined, {maximumFractionDigits: v > 100 ? 0 : 3}); };
+      var ans;
+      if (/btc|bitcoin/.test(qq)) ans = 'BTC is around ' + fmt(px('BTCUSDT')) + ' on the demo feed. Headlines in the last 48h lean positive (ETF inflows, softer jobs data), so the bias is mildly risk on. The open BTC long is in profit; the Risk Guard still has room on today\'s loss limit.';
+      else if (/eth|ether/.test(qq)) ans = 'ETH is near ' + fmt(px('ETHUSDT')) + '. The demo account holds a small ETH short, currently slightly in profit. Watch the CPI release: a hot print usually hits ETH harder than BTC.';
+      else if (/sol/.test(qq)) ans = 'SOL trades near ' + fmt(px('SOLUSDT')) + '. It leads the screener on momentum today, and the open SOL long is the best performer in the book.';
+      else if (/risk|drawdown|limit|loss/.test(qq)) ans = 'Risk Guard: daily loss limit 4% of the account, max drawdown 8% from the peak. Today\'s realized PnL is positive, so both bars are green. If a limit is hit, the dashboard turns the bar red, plays a sound and sends one notification.';
+      else if (/cpi|fed|rate|inflation|calendar|news/.test(qq)) ans = 'Key event on the demo calendar: US CPI at 19:30 WIB. Rates were held last week and jobs data came in softer, which supports risk assets. Expect volatility in the 30 minutes around the release.';
+      else if (/screen|setup|trade idea|which coin|long|short/.test(qq)) ans = 'From the screener: momentum leaders are SOL and WIF, while WIF and SOL also show up on the overbought fade list. A cleaner idea is to wait for a pullback into support rather than chase. Open the Screener tab and press Run All to see all 11 strategies.';
+      else ans = 'I can only answer from the data on this dashboard: live prices, the last 48 hours of headlines and the calendar. Try asking about BTC, ETH, SOL, risk limits, CPI or the screener.';
+      return new Promise(function(ok){ setTimeout(function(){ ok(res({answer: '**Demo answer** (no AI is called in the web demo)\n\n' + ans, provider: 'demo', status: 'ok'})); }, 600); });
+    }
     if (D[k]) return res(clone(D[k]));
     if (m === 'GET' && D['GET ' + path]) return res(clone(D['GET ' + path]));
     if (path === '/api/screener/run') {
@@ -1578,5 +1592,339 @@ window.__DEMO__ = {"GET /api/autosave/status":{"auto_triggered":[],"history":{"e
   }
 </script>
 <div id="webDemoBadge">DEMO · DUMMY DATA · LIMITED VERSION</div>
+<script id="tdExt">
+/* Trading Dashboard web demo, part 2: the write actions work in memory.
+   Paper orders open, fill and close positions, alerts trigger when the demo market crosses them,
+   risk limits recalculate, notifications can be read or cleared. Nothing leaves the browser,
+   no exchange or API is called, and a reload resets everything. */
+(function () {
+  var D = window.__DEMO__, inner = window.fetch;
+  if (!D || !inner) return;
+  var SYMS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT", "DOGEUSDT", "BNBUSDT", "LINKUSDT", "AVAXUSDT", "SUIUSDT"];
+  var seq = 900;
+  function J(o) { return Promise.resolve(new Response(JSON.stringify(o), { status: 200, headers: { "Content-Type": "application/json" } })); }
+  function body(o) { try { return JSON.parse((o && o.body) || "{}"); } catch (e) { return {}; } }
+  function p2(n) { return String(n).padStart(2, "0"); }
+  function stamp() { var d = new Date(); return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()) + " " + p2(d.getHours()) + ":" + p2(d.getMinutes()) + ":" + p2(d.getSeconds()); }
+  function list(k, f) { var o = D[k]; if (!o) o = D[k] = f || { data: [], status: "ok" }; return Array.isArray(o) ? o : (o.data = o.data || []); }
+  function dp(v) { return v >= 1000 ? 2 : v >= 10 ? 3 : v >= 1 ? 4 : 5; }
+  function usd(v) { return (v < 0 ? "−$" : "+$") + Math.abs(v).toFixed(2); }
+  function toast(m, t) { try { window.showToast && window.showToast(m, t || "success"); } catch (e) {} }
+  function refresh(names) { names.forEach(function (n) { try { typeof window[n] === "function" && window[n](); } catch (e) {} }); }
+  /* live price = the same drifting price the dashboard shows (read through the demo feed) */
+  function live(sym) { return inner("/api/bybit/ticker?symbols=" + sym).then(function (r) { return r.json(); }).then(function (j) { var v = j && j.data && j.data[sym]; return v ? +v.last : null; }); }
+  function staticMark(sym) { var t = D["GET /api/bybit/ticker?symbols=" + sym]; return t && t.data && t.data[sym] ? +t.data[sym].last : null; }
+  function notify(msg, type) {
+    var n = list("GET /api/notifications"); var id = ++seq;
+    n.unshift({ created_at: stamp(), id: id, message: msg, read: 0, type: type || "info" });
+    var c = D["GET /api/notifications/unread-count"] || (D["GET /api/notifications/unread-count"] = { count: 0, status: "ok" }); c.count = n.filter(function (x) { return !x.read; }).length;
+    refresh(["loadNotifications"]);
+  }
+  function balance(delta) { var b = D["GET /api/bybit/balance"]; if (b && b.data && b.data[0]) { b.data[0].balance = +(b.data[0].balance + delta).toFixed(2); } var s = D["GET /api/bybit/status"]; if (s) s.balance = +(s.balance + delta).toFixed(2); }
+  function riskPnl(delta) { var r = D["GET /api/risk/status"]; if (!r || !r.daily) return; var d = r.daily; d.pnl = +(d.pnl + delta).toFixed(2); d.loss = +Math.max(0, -d.pnl).toFixed(2); d.used_pct = d.limit ? +(d.loss / d.limit * 100).toFixed(1) : 0; d.remaining = +Math.max(0, d.limit - d.loss).toFixed(2); d.breached = d.loss >= d.limit && d.limit > 0; r.breached = d.breached; }
+  function journal(p, exit, pnl) {
+    var j = list("GET /api/journal"), dir = p.side === "Buy" ? 1 : -1, lev = +p.leverage || 1;
+    j.unshift({ bybit_order_id: "paper-" + (++seq), chart_link: null, chart_link2: null, closed_at: stamp(), entry_price: p.entry_price, exit_price: exit, id: seq, leverage: lev, opened_at: p._opened || stamp(), pnl: +pnl.toFixed(2), pnl_pct: +(((exit - p.entry_price) / p.entry_price) * 100 * dir * lev).toFixed(2), profile_id: "demo", reason_entry: "Paper trade from the web demo", reason_exit: "Closed from the Positions tab", result: pnl >= 0 ? "P" : "L", side: p.side === "Buy" ? "Long" : "Short", size: p.size, symbol: p.symbol, tags: "paper" });
+  }
+  function openPos(sym, side, margin, lev, px, sl, tp) {
+    var P = list("GET /api/bybit/positions"), size = +(margin * lev / px).toPrecision(4), sm = staticMark(sym) || px;
+    var ex = P.filter(function (p) { return p.symbol === sym; })[0];
+    if (ex && ex.side === side) { var tot = ex.size + size; ex.entry_price = +((ex.entry_price * ex.size + px * size) / tot).toFixed(dp(px)); ex.size = +tot.toPrecision(5); ex.margin = +(ex.margin + margin).toFixed(4); }
+    else {
+      var dir = side === "Buy" ? 1 : -1;
+      P.push({ entry_price: +px.toFixed(dp(px)), leverage: String(lev), liq_price: +(px * (1 - dir * 0.9 / lev)).toFixed(dp(px)), margin: +margin.toFixed(4), mark_price: sm, pnl_pct: 0, position_value: +(size * px).toFixed(2), side: side, size: size, symbol: sym, unrealised_pnl: 0, _opened: stamp() });
+    }
+    if (sl || tp) { var T = (D["GET /api/bybit/orders"] = D["GET /api/bybit/orders"] || { data: [], tpsl: [], status: "ok" }).tpsl = (D["GET /api/bybit/orders"].tpsl || []); T.push({ created_at: stamp(), pos_side: side === "Buy" ? "Long" : "Short", qty: size, sl: sl ? { order_id: "paper-sl-" + (++seq), price: sl, trigger_by: "LastPrice" } : null, status: "New", symbol: sym, tp: tp ? { order_id: "paper-tp-" + (++seq), price: tp, trigger_by: "LastPrice" } : null }); }
+    var k = D["GET /api/bybit/positions"]; return size;
+  }
+  function closePos(sym, px) {
+    var P = list("GET /api/bybit/positions"), i = -1; P.forEach(function (p, k) { if (p.symbol === sym) i = k; });
+    if (i < 0) return null;
+    var p = P[i], dir = p.side === "Buy" ? 1 : -1, pnl = (px - p.entry_price) * p.size * dir;
+    P.splice(i, 1); balance(pnl); riskPnl(pnl); journal(p, px, pnl);
+    var O = D["GET /api/bybit/orders"]; if (O && O.tpsl) O.tpsl = O.tpsl.filter(function (t) { return t.symbol !== sym; });
+    return { p: p, pnl: pnl };
+  }
+
+
+  /* AI market chat stand in: answers are built from the data on this dashboard (calendar, headlines,
+     prices, positions, risk). The real app sends the same context to an AI model. */
+  function rows(k) { var o = D[k]; return o ? (Array.isArray(o) ? o : o.data || []) : []; }
+  function ask(q) {
+    var t = q.toLowerCase(), out;
+    var heads = rows("GET /api/news/crypto").concat(rows("GET /api/news/macro"));
+    var coin = [["btc", "BTCUSDT"], ["bitcoin", "BTCUSDT"], ["eth", "ETHUSDT"], ["ether", "ETHUSDT"], ["sol", "SOLUSDT"], ["xrp", "XRPUSDT"], ["doge", "DOGEUSDT"], ["bnb", "BNBUSDT"], ["link", "LINKUSDT"], ["avax", "AVAXUSDT"], ["sui", "SUIUSDT"]].filter(function (c) { return new RegExp("\\b" + c[0] + "\\b").test(t); })[0];
+    var P = function () { return inner("/api/bybit/positions").then(function (r) { return r.json(); }).then(function (j) { return j.data || []; }); };
+    if (/event|calendar|release|this week|data to watch|cpi|fomc|payroll/.test(t) && !/bias|bullish|bearish/.test(t)) {
+      var cal = rows("GET /api/news/calendar").filter(function (e) { return e.days_out >= 0 && (e.impact === "high" || e.impact === "medium"); }).slice(0, 5);
+      out = Promise.resolve("**Upcoming events on the demo calendar**\n\n" + cal.map(function (e) { return "- " + e.day + " " + String(e.time || "").replace(/ WIB$/, "") + " \u00b7 " + e.currency + " " + e.event + " (" + e.impact + ")" + (e.forecast && e.forecast !== "\u2014" ? ", forecast " + e.forecast : "") + (e.previous ? ", previous " + e.previous : ""); }).join("\n") + "\n\nHigh impact US prints usually move BTC most in the 30 minutes after the release, so the dashboard warns 60 and 30 minutes before.");
+    } else if (/bias|bullish|bearish|sentiment/.test(t)) {
+      var bu = heads.filter(function (h) { return h.sentiment === "bullish"; }).length, be = heads.filter(function (h) { return h.sentiment === "bearish"; }).length, f = D["GET /api/sentiment/fng"] || {};
+      out = Promise.resolve("**Bias from the demo feed: " + (bu > be ? "mildly bullish" : bu < be ? "mildly bearish" : "neutral") + "**\n\n- Headlines in the last 48h: " + bu + " bullish, " + be + " bearish, " + (heads.length - bu - be) + " neutral\n- Fear and Greed index: " + (f.value != null ? f.value + " (" + f.label + ")" : "n/a") + "\n- Top bullish item: " + ((heads.filter(function (h) { return h.sentiment === "bullish"; })[0] || {}).title || "none"));
+    } else if (/moving|driving|catalyst|headline|news/.test(t)) {
+      var hot = heads.filter(function (h) { return h.hot || h.market_moving; }).slice(0, 4);
+      out = Promise.resolve("**What is moving the market (demo headlines)**\n\n" + hot.map(function (h) { return "- " + h.time + " \u00b7 " + h.title + " (" + h.sentiment + ")"; }).join("\n"));
+    } else if (coin) {
+      out = Promise.all([live(coin[1]), P()]).then(function (a) {
+        var px = a[0], pos = a[1].filter(function (p) { return p.symbol === coin[1]; })[0], tk = D["GET /api/bybit/ticker?symbols=" + coin[1]], ch = tk && tk.data && tk.data[coin[1]] ? tk.data[coin[1]].change_pct : null;
+        return "**" + coin[1].replace("USDT", "") + " on the demo feed: " + (px ? px.toFixed(dp(px)) : "n/a") + "**" + (ch != null ? " (" + (ch >= 0 ? "+" : "") + ch + "% in 24h)" : "") + "\n\n" + (pos ? "- Open " + (pos.side === "Buy" ? "long" : "short") + ", entry " + pos.entry_price + ", unrealized PnL " + usd(pos.unrealised_pnl) + "\n" : "- No open position in this coin\n") + "- Next high impact event: " + ((rows("GET /api/news/calendar").filter(function (e) { return e.days_out >= 0 && e.impact === "high"; })[0] || {}).event || "none on the calendar");
+      });
+    } else if (/position|portfolio|pnl|exposure/.test(t)) {
+      out = P().then(function (ps) { var u = ps.reduce(function (s, p) { return s + p.unrealised_pnl; }, 0); return "**Open positions: " + ps.length + ", unrealized PnL " + usd(u) + "**\n\n" + ps.map(function (p) { return "- " + p.symbol + " " + (p.side === "Buy" ? "long" : "short") + " " + p.leverage + "x, PnL " + usd(p.unrealised_pnl); }).join("\n"); });
+    } else if (/drawdown|limit|risk guard|buffer|my risk|loss/.test(t)) {
+      var r = D["GET /api/risk/status"] || {}, dd = r.daily || {}, dw = r.drawdown || {};
+      out = Promise.resolve("**Risk Guard**\n\n- Daily loss limit " + dd.limit_pct + "% = $" + dd.limit + ", used $" + dd.loss + ", buffer $" + dd.remaining + "\n- Max drawdown " + dw.limit_pct + "% = $" + dw.limit + "\n- Today's realized PnL " + usd(dd.pnl || 0));
+    } else if (/screen|setup|idea|which coin/.test(t)) {
+      out = Promise.resolve("From the screener: momentum leaders are SOL and WIF, while WIF and SOL also show up on the overbought fade list. A cleaner idea is to wait for a pullback into support rather than chase. Open the Screener tab and press Run All to see every strategy.");
+    } else out = Promise.resolve("I answer from the data on this dashboard: prices, positions, risk limits, the calendar and the last 48 hours of headlines. Try: \"How is BTC?\", \"What's moving?\", \"Today's events\" or \"How much risk buffer do I have?\"");
+    return out.then(function (a) { return new Promise(function (ok) { setTimeout(function () { ok(J({ answer: "**Demo answer** \u00b7 built from this dashboard's demo data, no AI model is called in the web demo\n\n" + a, provider: "demo", status: "ok" })); }, 650); }); });
+  }
+
+  window.fetch = function (input, opts) {
+    var url = typeof input === "string" ? input : (input && input.url) || "";
+    var m = ((opts && opts.method) || "GET").toUpperCase();
+    if (url.indexOf("/api/") === -1 || m === "GET") return inner(input, opts);
+    var path = url.replace(/^.*?(\/api\/)/, "/api/").split("?")[0], b = body(opts);
+
+    if (path === "/api/news/ask") return ask(String(b.question || ""));
+    if (path === "/api/bybit/place-order") {
+      var sym = String(b.symbol || "").toUpperCase();
+      if (SYMS.indexOf(sym) < 0) return J({ status: "error", message: "Web demo: paper orders work for " + SYMS.map(function (s) { return s.replace("USDT", ""); }).join(", ") + "." });
+      return live(sym).then(function (px) {
+        if (!px) return J({ status: "error", message: "No demo price for " + sym });
+        if (b.reduce_only) {
+          var r = closePos(sym, px);
+          if (!r) return J({ status: "error", message: "No open " + sym + " position." });
+          notify("📒 Closed " + sym + " " + (r.p.side === "Buy" ? "long" : "short") + " at " + px.toFixed(dp(px)) + " · PnL " + usd(r.pnl) + " (paper trade, saved to the journal)", "trade_closed");
+          refresh(["loadOverview", "loadRiskStatus", "loadOrders"]);
+          return J({ status: "ok", message: "Paper trade closed at " + px.toFixed(dp(px)) + ". Realized PnL " + usd(r.pnl) + ". It is in the Journal now." });
+        }
+        var lev = Math.max(1, Math.min(100, +b.leverage || 10)), margin = +b.margin_usdt || 0, side = b.side === "Sell" ? "Sell" : "Buy";
+        if (margin <= 0) return J({ status: "error", message: "Value (USDT) required." });
+        if (b.order_type === "Limit" && +b.price > 0) {
+          var O = D["GET /api/bybit/orders"] = D["GET /api/bybit/orders"] || { data: [], tpsl: [], status: "ok" }; O.data = O.data || [];
+          var id = "paper-" + (++seq);
+          O.data.push({ created_at: stamp(), order_id: id, order_type: "Limit", price: +b.price, qty: +(margin * lev / b.price).toPrecision(4), side: side, status: "New", symbol: sym, trigger: 0, _m: margin, _lev: lev, _sl: +b.sl || 0, _tp: +b.tp || 0 });
+          return J({ status: "ok", orderId: id, message: "Limit order placed (paper). It fills when the demo price reaches " + b.price + "." });
+        }
+        var size = openPos(sym, side, margin, lev, px, +b.sl || 0, +b.tp || 0);
+        notify("⚡ Paper " + (side === "Buy" ? "long" : "short") + " " + sym + " filled at " + px.toFixed(dp(px)) + " · size " + size + " · " + lev + "x", "order_filled");
+        refresh(["loadOverview"]);
+        return J({ status: "ok", orderId: "paper-" + (++seq) });
+      });
+    }
+    if (path === "/api/bybit/cancel-order") {
+      var O2 = D["GET /api/bybit/orders"] || {}, oid = b.order_id;
+      O2.data = (O2.data || []).filter(function (o) { return o.order_id !== oid; });
+      (O2.tpsl || []).forEach(function (t) { if (t.tp && t.tp.order_id === oid) t.tp = null; if (t.sl && t.sl.order_id === oid) t.sl = null; });
+      O2.tpsl = (O2.tpsl || []).filter(function (t) { return t.tp || t.sl; });
+      return J({ status: "ok", message: "Order cancelled (paper)." });
+    }
+    if (path === "/api/price-alerts" && m === "POST") {
+      var A = list("GET /api/price-alerts", []), sym2 = String(b.symbol || "").toUpperCase().replace(/USDT$/, "");
+      var row = { created_at: stamp(), direction: b.direction === "below" ? "below" : "above", id: ++seq, note: b.note || "", symbol: sym2, target_price: +b.target_price, triggered: 0, triggered_at: null };
+      A.push(row); return J(row);
+    }
+    var mDel = path.match(/^\/api\/price-alerts\/(\d+)$/);
+    if (mDel && m === "DELETE") { var A2 = list("GET /api/price-alerts", []); for (var i = A2.length - 1; i >= 0; i--) if (String(A2[i].id) === mDel[1]) A2.splice(i, 1); return J({ status: "ok" }); }
+    if (path === "/api/risk/profile") {
+      var pr = (D["GET /api/risk/profile"] = D["GET /api/risk/profile"] || { data: {}, profile: "demo", status: "ok" }).data, st = D["GET /api/risk/status"];
+      if (b.reset_peak) { if (st) { st.peak_equity = st.equity; pr.peak_equity = st.equity; } return J({ status: "ok", profile: "demo" }); }
+      if (!(b.account_size > 0) || !(b.daily_loss_pct > 0) || !(b.max_drawdown_pct > 0)) return J({ status: "error", message: "Enter an account size and both limits." });
+      pr.account_size = +b.account_size; pr.daily_loss_pct = +b.daily_loss_pct; pr.max_drawdown_pct = +b.max_drawdown_pct;
+      if (st) {
+        st.account_size = pr.account_size; st.configured = true;
+        st.daily.limit_pct = pr.daily_loss_pct; st.daily.limit = +(pr.account_size * pr.daily_loss_pct / 100).toFixed(2);
+        st.drawdown.limit_pct = pr.max_drawdown_pct; st.drawdown.limit = +(pr.account_size * pr.max_drawdown_pct / 100).toFixed(2);
+        riskPnl(0);
+      }
+      return J({ status: "ok", profile: "demo" });
+    }
+    if (path === "/api/notifications/read") { list("GET /api/notifications").forEach(function (n) { n.read = 1; }); if (D["GET /api/notifications/unread-count"]) D["GET /api/notifications/unread-count"].count = 0; return J({ status: "ok" }); }
+    if (path === "/api/notifications/clear") { D["GET /api/notifications"].data = []; if (D["GET /api/notifications/unread-count"]) D["GET /api/notifications/unread-count"].count = 0; return J({ status: "ok" }); }
+    var nDel = path.match(/^\/api\/notifications\/(\d+)$/);
+    if (nDel && m === "DELETE") { var N = list("GET /api/notifications"); D["GET /api/notifications"].data = N.filter(function (n) { return String(n.id) !== nDel[1]; }); return J({ status: "ok" }); }
+    return inner(input, opts);
+  };
+
+  /* the demo market: fill limit orders and fire alerts when the drifting price crosses them */
+  function watch() {
+    var O = D["GET /api/bybit/orders"] || {}, A = Array.isArray(D["GET /api/price-alerts"]) ? D["GET /api/price-alerts"] : [];
+    var syms = {}; (O.data || []).forEach(function (o) { if (o._m) syms[o.symbol] = 1; }); A.forEach(function (a) { if (!a.triggered) syms[a.symbol + "USDT"] = 1; });
+    Object.keys(syms).forEach(function (sym) {
+      if (SYMS.indexOf(sym) < 0) return;
+      live(sym).then(function (px) {
+        if (!px) return;
+        (O.data || []).slice().forEach(function (o) {
+          if (o.symbol !== sym || !o._m) return;
+          if ((o.side === "Buy" && px <= o.price) || (o.side === "Sell" && px >= o.price)) {
+            O.data = O.data.filter(function (x) { return x !== o; });
+            openPos(sym, o.side, o._m, o._lev, o.price, o._sl, o._tp);
+            notify("✅ Limit " + (o.side === "Buy" ? "buy" : "sell") + " " + sym + " filled at " + o.price + " (paper)", "order_filled");
+            toast("Limit order filled: " + sym + " at " + o.price);
+            refresh(["loadPositions", "loadOrders", "loadOverview"]);
+          }
+        });
+        A.slice().forEach(function (a) {
+          if (a.triggered || a.symbol + "USDT" !== sym) return;
+          if ((a.direction === "above" && px >= a.target_price) || (a.direction === "below" && px <= a.target_price)) {
+            a.triggered = 1; a.triggered_at = stamp();
+            var k = A.indexOf(a); if (k > -1) A.splice(k, 1);
+            var H = Array.isArray(D["GET /api/price-alerts/history"]) ? D["GET /api/price-alerts/history"] : (D["GET /api/price-alerts/history"] = []); H.unshift(a);
+            notify("🔔 " + sym + " crossed " + a.direction + " $" + a.target_price + (a.note ? " · " + a.note : ""), "price_alert");
+            toast("Alert: " + a.symbol + " crossed " + a.direction + " " + a.target_price);
+            refresh(["loadAlerts", "loadAlertHistory"]);
+          }
+        });
+      });
+    });
+  }
+  setInterval(watch, 4000);
+  window.__TD_PAPER__ = { watch: watch };
+})();
+
+</script>
+<script id="pfTourCfg">
+/* guided tour steps: Trading Dashboard web demo */
+(function () {
+  function sec(id) { return function () { if (typeof switchSection === "function") switchSection(id); }; }
+  function card(id) { return function () { var e = document.getElementById(id); return e ? (e.closest(".card") || e) : null; }; }
+  function setv(id, v) { var e = document.getElementById(id); if (e) { e.value = v; e.dispatchEvent(new Event("input", { bubbles: true })); e.dispatchEvent(new Event("change", { bubbles: true })); } }
+  window.PF_TOUR_OPT = { pos: "br", len: "9 steps", hint: "New here? The guided tour clicks through the dashboard for you: paper trades, alerts, the AI chat and more.", extraCss: "@media (max-width:760px){#pfTourBtn{bottom:84px!important}}", onEnd: sec("overview") };
+  window.PF_TOUR = [
+    { before: sec("overview"), sel: function () { var e = document.getElementById("kpiBalance"); return e ? e.closest(".card").parentElement : null; }, title: "The account at a glance", text: "Balance, monthly PnL, open positions and win rate. Prices drift like a live market, so these numbers keep moving. Everything here is dummy data." },
+    { sel: "#riskCard", title: "Risk Guard", text: "Daily loss limit and maximum drawdown, shown as bars that fill up. Open Limits to change them and the bars recalculate on the spot." },
+    { before: function () { setv("aiAskInput", "How is BTC looking right now?"); var b = document.getElementById("aiSendBtn"); if (b) b.click(); }, wait: 1400, sel: "#marketAiCard", title: "AI market chat", text: "Ask about a coin, today's events, what is moving or your risk buffer. The real app sends this dashboard's data to an AI model; the web demo builds the answer from the same demo data." },
+    { before: function () { sec("screener")(); var b = document.getElementById("btnRunAll"); if (b) b.click(); }, wait: 1300, sel: card("screenerTable"), title: "Screener", text: "Run All scans the market with every strategy at once and ranks the coins. From any row you can set a price alert." },
+    { before: function () { sec("positions")(); setv("orderSymbol", "XRPUSDT"); setv("orderValue", "150"); }, sel: card("orderSymbol"), title: "Place a paper order", text: "XRP and 150 USDT are filled in for you. Press Place Order: a new position opens at the live demo price and starts moving. Limit orders fill when the price gets there." },
+    { sel: card("positionsBody"), title: "Positions with live PnL", text: "Entry, mark, liquidation price and unrealized PnL update with the market. Close books the profit or loss into the journal and sends a notification." },
+    { sel: card("alertsBody"), title: "Price alerts", text: "Add an alert just above or below the current price. When the demo price crosses it, you get a notification with sound, the same flow as the real app." },
+    { before: sec("journal"), sel: card("journalBody"), title: "Automatic journal", text: "Every closed trade is logged with entry, exit, PnL and the reason. Paper trades you close in this demo show up here too." },
+    { before: sec("history"), sel: card("tradingCalendar"), title: "Performance history", text: "Monthly and weekly PnL, best day, win rate and a calendar of trading days. That is the tour. Reload the page any time to reset the demo." }
+  ];
+})();
+
+</script>
+<script id="pfTour">
+/* Guided tour for the portfolio web demos. Steps come from window.PF_TOUR:
+   { sel: "css" | function, title, text, before: function (may return a promise), wait: ms }
+   The tour clicks through the real app, so every step shows a working feature. */
+(function () {
+  var STEPS = window.PF_TOUR || [];
+  if (!STEPS.length || window.__pfTourOn) return;
+  window.__pfTourOn = true;
+  var OPT = window.PF_TOUR_OPT || {}, POS = OPT.pos || "br", Z = 2147483600;
+  var css = document.createElement("style");
+  css.id = "pfTourCss";
+  css.textContent = [
+    "#pfTourBtn{position:fixed;z-index:" + Z + ";display:inline-flex;align-items:center;gap:8px;padding:9px 14px 9px 11px;border-radius:999px;border:1px solid rgba(45,212,191,.55);background:rgba(8,12,13,.92);color:#bff7ee;font:600 13px/1 Inter,system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .2s,border-color .2s}",
+    "#pfTourBtn:hover{transform:translateY(-2px);border-color:#2dd4bf}",
+    "#pfTourBtn i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7af0dc,#2dd4bf);color:#062a26;font-style:normal;font-size:10px}",
+    "#pfTourBtn small{font:500 11px ui-monospace,Menlo,monospace;color:#7d9a96}",
+    "#pfTourBtn.pulse{animation:pfPulse 2.2s ease-out 3}",
+    "@keyframes pfPulse{0%{box-shadow:0 0 0 0 rgba(45,212,191,.55)}100%{box-shadow:0 0 0 16px rgba(45,212,191,0)}}",
+    "#pfTourHint{position:fixed;z-index:" + Z + ";max-width:230px;padding:10px 12px;border-radius:12px;background:#0b1112;color:#dff;border:1px solid rgba(45,212,191,.4);font:500 12.5px/1.45 Inter,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .4s}",
+    "#pfTourRing{position:fixed;z-index:" + (Z - 2) + ";border-radius:12px;border:2px solid #2dd4bf;box-shadow:0 0 0 9999px rgba(3,6,7,.58),0 0 24px rgba(45,212,191,.45);pointer-events:none;transition:all .35s cubic-bezier(.22,1,.36,1)}",
+    "#pfTourDim{position:fixed;inset:0;z-index:" + (Z - 3) + ";background:transparent}",
+    "#pfTourCard{position:fixed;z-index:" + (Z - 1) + ";width:330px;max-width:calc(100vw - 24px);padding:16px 16px 14px;border-radius:16px;background:#0b1011;color:#e8f2f1;border:1px solid rgba(45,212,191,.35);box-shadow:0 20px 50px rgba(0,0,0,.5);font:400 14px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;transition:top .35s cubic-bezier(.22,1,.36,1),left .35s cubic-bezier(.22,1,.36,1),opacity .25s}",
+    "#pfTourCard .k{font:600 10.5px ui-monospace,Menlo,monospace;letter-spacing:1px;text-transform:uppercase;color:#2dd4bf}",
+    "#pfTourCard h4{margin:4px 0 6px;font:600 16px/1.3 'Space Grotesk',Inter,system-ui,sans-serif;color:#fff}",
+    "#pfTourCard p{margin:0;color:#b5c4c2}",
+    "#pfTourCard .bar{height:3px;border-radius:3px;background:rgba(255,255,255,.08);margin:12px 0 10px;overflow:hidden}",
+    "#pfTourCard .bar b{display:block;height:100%;background:linear-gradient(90deg,#2dd4bf,#8b7cf6);transition:width .35s}",
+    "#pfTourCard .row{display:flex;justify-content:space-between;align-items:center;gap:8px}",
+    "#pfTourCard button{font:600 13px Inter,system-ui,sans-serif;border-radius:999px;padding:7px 14px;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:transparent;color:#cfe}",
+    "#pfTourCard button.go{background:linear-gradient(135deg,#7af0dc,#2dd4bf);color:#062a26;border-color:transparent}",
+    "#pfTourCard button.x{border:0;padding:4px 6px;color:#7d9a96}",
+    "#pfTourCard button[disabled]{opacity:.35;cursor:default}",
+    "@media (max-width:560px){#pfTourCard{left:12px!important;right:12px;width:auto}#pfTourBtn small{display:none}}"
+  ].join("\n") + (OPT.extraCss || "");
+  document.head.appendChild(css);
+
+  var btn = document.createElement("button");
+  btn.type = "button"; btn.id = "pfTourBtn"; btn.className = "pulse";
+  btn.innerHTML = "<i>&#9654;</i>Guided tour<small>" + (OPT.len || "1 min") + "</small>";
+  var place = function (el) { var m = { br: "right:14px;bottom:14px", bl: "left:14px;bottom:14px", tr: "right:14px;top:12px", tl: "left:14px;top:12px", bc: "left:50%;bottom:14px;transform:translateX(-50%)" }; el.style.cssText += ";" + (OPT.css || m[POS] || m.br); };
+  place(btn);
+  document.body.appendChild(btn);
+
+  /* one time hint so first visitors notice the tour */
+  var hint = null;
+  setTimeout(function () {
+    if (cur > -1) return;
+    hint = document.createElement("div"); hint.id = "pfTourHint";
+    hint.textContent = OPT.hint || "New here? Take the guided tour. It clicks through the main features for you.";
+    document.body.appendChild(hint);
+    var r = btn.getBoundingClientRect();
+    hint.style.left = Math.max(10, Math.min(window.innerWidth - 240, r.right - 230)) + "px";
+    hint.style.top = (r.top > 120 ? r.top - hint.offsetHeight - 10 : r.bottom + 10) + "px";
+    setTimeout(function () { if (hint) { hint.style.opacity = "0"; setTimeout(function () { hint && hint.remove(); hint = null; }, 450); } }, 6500);
+  }, OPT.hintDelay || 1600);
+
+  var ring, card, dim, cur = -1, busy = false, track = null;
+  function find(s) { try { var e = typeof s.sel === "function" ? s.sel() : document.querySelector(s.sel); return e && e.getClientRects().length ? e : null; } catch (e) { return null; } }
+  function layout() {
+    if (cur < 0 || !ring || !card) return;
+    var el = find(STEPS[cur]), vw = window.innerWidth, vh = window.innerHeight, pad = STEPS[cur].pad == null ? 6 : STEPS[cur].pad;
+    if (!el) { ring.style.opacity = "0"; card.style.bottom = "auto"; card.style.left = Math.max(12, (vw - card.offsetWidth) / 2) + "px"; card.style.top = Math.max(12, (vh - card.offsetHeight) / 2) + "px"; return; }
+    var r = el.getBoundingClientRect(), top = Math.max(4, r.top - pad), left = Math.max(4, r.left - pad), w = Math.min(vw - 8, r.width + pad * 2), h = Math.min(vh - top - 4, r.height + pad * 2);
+    ring.style.opacity = "1"; ring.style.top = top + "px"; ring.style.left = left + "px"; ring.style.width = w + "px"; ring.style.height = Math.max(24, h) + "px";
+    if (vw <= 560) { /* phone: card goes to the half of the screen the target is not in */
+      var low = top + h / 2 > vh * 0.5; card.style.left = "12px";
+      if (low) { card.style.top = "12px"; card.style.bottom = "auto"; } else { card.style.top = "auto"; card.style.bottom = "12px"; }
+      return;
+    }
+    card.style.bottom = "auto";
+    var cw = card.offsetWidth, ch = card.offsetHeight, ct, cl;
+    if (top + h + 12 + ch < vh) { ct = top + h + 12; cl = left; }
+    else if (top - 12 - ch > 0) { ct = top - 12 - ch; cl = left; }
+    else if (left + w + 12 + cw < vw) { ct = Math.min(vh - ch - 12, Math.max(12, top)); cl = left + w + 12; }
+    else if (left - 12 - cw > 0) { ct = Math.min(vh - ch - 12, Math.max(12, top)); cl = left - 12 - cw; }
+    else { ct = vh - ch - 12; cl = (vw - cw) / 2; }
+    card.style.top = ct + "px"; card.style.left = Math.max(12, Math.min(vw - cw - 12, cl)) + "px";
+  }
+  function paint() {
+    var s = STEPS[cur], n = STEPS.length;
+    card.innerHTML = '<div class="row"><span class="k">Step ' + (cur + 1) + " of " + n + '</span><button type="button" class="x" data-a="end" aria-label="Close the tour">&#10005;</button></div><h4></h4><p></p><div class="bar"><b style="width:' + ((cur + 1) / n * 100) + '%"></b></div><div class="row"><button type="button" data-a="back"' + (cur ? "" : " disabled") + '>Back</button><button type="button" class="go" data-a="next">' + (cur === n - 1 ? "Finish" : "Next") + "</button></div>";
+    card.querySelector("h4").textContent = s.title; card.querySelector("p").textContent = s.text;
+  }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function go(i) {
+    if (busy) return; if (i < 0) return; if (i >= STEPS.length) return end();
+    busy = true; cur = i;
+    if (card) card.style.opacity = "0"; if (ring) ring.style.opacity = "0";
+    var s = STEPS[i], p;
+    try { p = s.before ? s.before() : null; } catch (e) { p = null; }
+    Promise.resolve(p).catch(function () {}).then(function () { return wait(s.wait == null ? 380 : s.wait); }).then(function () {
+      var el = find(s);
+      if (el && el.scrollIntoView) { try { el.scrollIntoView({ block: s.block || "center", behavior: "smooth" }); } catch (e) { el.scrollIntoView(); } }
+      return wait(el ? 420 : 0);
+    }).then(function () { paint(); layout(); card.style.opacity = "1"; busy = false; card.querySelector(".go").focus({ preventScroll: true }); if (!track) track = setInterval(layout, 250); /* follow content that animates or reflows */ });
+  }
+  function start() {
+    if (hint) { hint.remove(); hint = null; }
+    btn.classList.remove("pulse"); btn.style.display = "none";
+    dim = document.createElement("div"); dim.id = "pfTourDim"; document.body.appendChild(dim);
+    ring = document.createElement("div"); ring.id = "pfTourRing"; document.body.appendChild(ring);
+    card = document.createElement("div"); card.id = "pfTourCard"; card.setAttribute("role", "dialog"); card.setAttribute("aria-label", "Guided tour"); document.body.appendChild(card);
+    card.addEventListener("click", function (e) { var a = e.target.closest("[data-a]"); if (!a) return; var k = a.getAttribute("data-a"); if (k === "next") go(cur + 1); else if (k === "back") go(cur - 1); else end(); });
+    dim.addEventListener("click", function () { go(cur + 1); });
+    go(0);
+  }
+  function end() {
+    clearInterval(track); track = null;
+    [ring, card, dim].forEach(function (x) { x && x.remove(); }); ring = card = dim = null; cur = -1; busy = false;
+    btn.style.display = ""; btn.querySelector("i").nextSibling.textContent = "Tour again";
+    try { OPT.onEnd && OPT.onEnd(); } catch (e) {}
+  }
+  btn.addEventListener("click", start);
+  document.addEventListener("keydown", function (e) { if (cur < 0) return; if (e.key === "Escape") end(); else if (e.key === "ArrowRight") go(cur + 1); else if (e.key === "ArrowLeft") go(cur - 1); });
+  var rt; function re() { clearTimeout(rt); rt = setTimeout(layout, 60); }
+  window.addEventListener("resize", re); window.addEventListener("scroll", re, true);
+  window.PF_TOUR_API = { start: start, go: go, end: end, cur: function () { return cur; } };
+  if (/[?&]tour=1/.test(location.search)) setTimeout(start, 900);
+})();
+
+</script>
 </body>
 </html>

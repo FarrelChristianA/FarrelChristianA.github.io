@@ -2660,5 +2660,314 @@ document.documentElement.setAttribute('data-theme',t);})();</script>
 <script src="assets/charts.js"></script>
 <script src="assets/app.js"></script>
 <style id="pfDemoBadgeCss">@media (max-width:560px){#pfDemoBadge{display:none!important}}</style><div id="pfDemoBadge" style="position:fixed;left:12px;bottom:12px;z-index:2147483000;font:500 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.04em;padding:7px 11px;border-radius:999px;background:rgba(10,14,16,.82);color:#9bf6e6;border:1px solid rgba(45,212,191,.4);pointer-events:none;opacity:.9">DEMO · DUMMY DATA · LIMITED VERSION</div>
+<script id="mmExt">
+/* Macro Master web demo additions: Release Lab and Quiz.
+   Both are built only from the playbooks already in this workspace (the QA knowledge base),
+   so the arrows and answers match the lessons word for word in meaning. */
+(function () {
+  "use strict";
+  if (document.getElementById("mm-lab")) return;
+  var KB = (typeof QA !== "undefined" && QA) ? QA : [];
+  function qa(t) { for (var i = 0; i < KB.length; i++) if (KB[i].title.indexOf(t) === 0) return KB[i]; return null; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  var css = document.createElement("style"); css.id = "mmExtCss";
+  css.textContent = [
+    ".section.mm-x{counter-increment:none}",
+    "#mm-lab .sec-hd::after{content:\"\\2726\"}",
+    "#mm-quiz .sec-hd::after{content:\"?\"}",
+    ".mm-x .seg{display:flex;flex-wrap:wrap;gap:8px}",
+    ".mm-x .chipb{font:600 13px var(--font-ui);padding:8px 14px;border-radius:var(--r-pill);border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text-2);cursor:pointer;transition:all .15s}",
+    ".mm-x .chipb:hover{color:var(--text);border-color:var(--accent)}",
+    ".mm-x .chipb.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}",
+    ".mm-x .lbl{font:700 11px var(--font-mono);letter-spacing:.8px;text-transform:uppercase;color:var(--text-3);margin:0 0 8px}",
+    ".mm-x .rowx{margin-bottom:16px}",
+    ".mm-chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:6px 0 16px;position:relative}",
+    ".mm-node{position:relative;border:1px solid var(--border);border-radius:var(--r-md);padding:12px 12px 10px;background:var(--surface-2);opacity:.25;transform:translateY(6px);transition:opacity .35s,transform .35s var(--ease),border-color .35s}",
+    ".mm-node.in{opacity:1;transform:none}",
+    ".mm-node .nm{font:700 11px var(--font-mono);letter-spacing:.6px;text-transform:uppercase;color:var(--text-3)}",
+    ".mm-node .ar{font:700 26px/1.1 var(--font-display);margin:6px 0 4px}",
+    ".mm-node .ds{font-size:12.5px;color:var(--text-2);line-height:1.4}",
+    ".mm-node.up{border-color:color-mix(in oklab,var(--up) 55%,transparent)} .mm-node.up .ar{color:var(--up)}",
+    ".mm-node.down{border-color:color-mix(in oklab,var(--down) 55%,transparent)} .mm-node.down .ar{color:var(--down)}",
+    ".mm-node.mix .ar{color:var(--warn)}",
+    ".mm-node:not(:last-child)::after{content:'→';position:absolute;right:-10px;top:50%;transform:translate(50%,-50%);color:var(--text-faint);font-size:14px}",
+    ".mm-verdict{display:inline-flex;align-items:center;gap:8px;font:700 13px var(--font-ui);padding:6px 12px;border-radius:var(--r-pill);margin-bottom:12px}",
+    ".mm-verdict.off{background:var(--down-soft);color:var(--down)} .mm-verdict.on{background:var(--up-soft);color:var(--up)} .mm-verdict.mix{background:var(--warn-soft);color:var(--warn)}",
+    ".mm-ans{border-top:1px solid var(--border);padding-top:14px;font-size:14px;line-height:1.65;color:var(--text-2)}",
+    ".mm-ans h4{margin:0 0 8px;font:600 15px var(--font-display);color:var(--text)}",
+    ".mm-refs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}",
+    ".mm-refs button{font:600 12.5px var(--font-ui);padding:6px 12px;border-radius:var(--r-pill);border:1px dashed var(--accent);background:transparent;color:var(--accent);cursor:pointer}",
+    ".mm-note{font-size:12.5px;color:var(--text-3);margin-top:10px}",
+    ".mm-q .qh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font:700 12px var(--font-mono);color:var(--text-3)}",
+    ".mm-q .qbar{height:4px;border-radius:4px;background:var(--surface-3);overflow:hidden;margin-bottom:16px} .mm-q .qbar b{display:block;height:100%;background:var(--accent);transition:width .3s}",
+    ".mm-q .qq{font:600 17px/1.4 var(--font-display);color:var(--text);margin-bottom:14px}",
+    ".mm-q .opts{display:grid;gap:8px}",
+    ".mm-q .opt{text-align:left;font:500 14px var(--font-ui);padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);cursor:pointer;transition:all .15s}",
+    ".mm-q .opt:hover:not([disabled]){border-color:var(--accent)}",
+    ".mm-q .opt.ok{background:var(--up-soft);border-color:var(--up);color:var(--text)} .mm-q .opt.no{background:var(--down-soft);border-color:var(--down)}",
+    ".mm-q .opt[disabled]{cursor:default}",
+    ".mm-q .why{margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:var(--surface-2);font-size:13.5px;color:var(--text-2);line-height:1.55}",
+    ".mm-q .nx{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;flex-wrap:wrap}",
+    ".mm-q .go{font:700 13.5px var(--font-ui);padding:9px 18px;border-radius:var(--r-pill);border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer}",
+    ".mm-q .lnk{font:600 13px var(--font-ui);background:none;border:0;color:var(--accent);cursor:pointer;padding:0}",
+    ".mm-q .score{font:700 44px var(--font-display);color:var(--accent)}",
+    "@media (max-width:760px){.mm-chain{grid-template-columns:1fr 1fr}.mm-node:not(:last-child)::after{display:none}.mm-q .qq{font-size:15.5px}}"
+  ].join("\n");
+  document.head.appendChild(css);
+
+  /* ---------------- data: chains read off the QA playbooks ---------------- */
+  var NODES = ["Rate path", "Bond yields", "US dollar (DXY)", "Stocks", "Crypto"];
+  var EV = {
+    cpi: { name: "CPI", dirs: [["hot", "Hotter than expected"], ["soft", "Cooler than expected"]], q: { hot: "CPI Hot", soft: "CPI Soft" },
+      hot: { v: ["off", "Risk off"], n: [["up", "↑", "Cut odds collapse: higher for longer"], ["up", "↑", "US2Y spikes first, most tied to the Fed"], ["up", "↑", "Dollar pumps"], ["down", "↓", "Equities sell off"], ["down", "↓", "Crypto drops hard"]] },
+      soft: { v: ["on", "Risk on"], n: [["down", "↓", "Cut odds rise: cuts come sooner"], ["down", "↓", "US10Y falls"], ["down", "↓", "Dollar weakens"], ["up", "↑", "Equities rally"], ["up", "↑", "BTC and crypto lead"]] } },
+    pce: { name: "PCE", dirs: [["hot", "Hotter than expected"], ["soft", "Cooler than expected"]], q: { hot: "PCE Hot", soft: "PCE Soft" },
+      hot: { v: ["off", "Risk off, short term"], n: [["up", "↑", "Cut odds drop, pivot pushed back"], ["up", "↑", "US10Y rises"], ["up", "↑", "Dollar strengthens"], ["down", "↓", "Equities pressured"], ["down", "↓", "Crypto pressured"]] },
+      soft: { v: ["on", "Risk on"], n: [["down", "↓", "Cut odds rise"], ["down", "↓", "US10Y drops"], ["down", "↓", "Dollar weakens"], ["up", "↑", "Risk assets bid"], ["up", "↑", "Crypto outperforms"]] } },
+    nfp: { name: "Payrolls (NFP)", dirs: [["hot", "Stronger than expected"], ["soft", "Weaker than expected"]], q: { hot: "NFP Beat", soft: "NFP Miss" },
+      hot: { v: ["mix", "Mixed"], n: [["up", "↑", "Cut odds fall: no need to cut"], ["up", "↑", "US10Y rises"], ["up", "↑", "Dollar strengthens"], ["mix", "↕", "May rally on a resilient economy"], ["down", "↓", "Headwind from delayed cuts"]] },
+      soft: { v: ["on", "Risk on, if not too weak"], n: [["down", "↓", "Cut odds rise: cuts come sooner"], ["down", "↓", "US10Y drops"], ["down", "↓", "Dollar weakens"], ["up", "↑", "Risk assets rally"], ["up", "↑", "Crypto typically rallies"]] } },
+    fed: { name: "Fed decision", dirs: [["hot", "Rate hike"], ["soft", "Rate cut"]], q: { hot: "Fed Rate Hike", soft: "Fed Rate Cut" },
+      hot: { v: ["off", "Risk off"], n: [["up", "↑", "Borrowing costs rise, credit contracts"], ["up", "↑", "Real yields rise"], ["up", "↑", "Dollar strengthens"], ["down", "↓", "Valuations compress"], ["down", "↓", "Bearish for crypto"]] },
+      soft: { v: ["on", "Risk on, unless priced in"], n: [["down", "↓", "Policy rate lower"], ["down", "↓", "US10Y drops"], ["down", "↓", "Dollar weakens"], ["up", "↑", "Equities pump"], ["up", "↑", "BTC pumps; biggest gains 3 to 9 months later"]] } }
+  };
+  var S = { ev: "cpi", dir: "hot" };
+
+  function sectionHTML(id, icon, title, sub, inner) {
+    return '<div class="section mm-x" id="' + id + '"><div class="sec-hd"><span class="sec-icon">' + icon + '</span><div><div class="sec-title">' + title + '</div><div class="sec-sub">' + sub + "</div></div></div>" + inner + "</div>";
+  }
+  var labHTML = sectionHTML("mm-lab", "🧪", "Release Lab", "Pick a data surprise and watch the first market reaction, step by step. Built from the playbooks in this workspace.",
+    '<div class="card"><div class="rowx"><div class="lbl">1. The release</div><div class="seg" id="mmEv"></div></div><div class="rowx"><div class="lbl">2. The surprise</div><div class="seg" id="mmDir"></div></div>' +
+    '<div class="lbl">3. The first reaction</div><div class="mm-chain" id="mmChain"></div><div id="mmVerdict"></div><div class="mm-ans" id="mmAns"></div><div class="mm-refs" id="mmRefs"></div>' +
+    '<div class="mm-note">Typical first reaction from the lessons, not a forecast. Context changes it: what is already priced in matters as much as the surprise.</div></div>');
+
+  /* quiz: every answer is stated in the lessons */
+  var QZ = [
+    { q: "US CPI comes in above consensus. Which yield do the lessons call the most sensitive to Fed expectations?", a: ["US 2 year", "US 10 year", "US 30 year", "The TIPS breakeven"], why: "Hot CPI: rate cut odds collapse and the US2Y spikes first, because it is the yield most tied to the Fed.", ref: "CPI Hot" },
+    { q: "Core PCE prints +0.35% month on month. How does the playbook read it?", a: ["A hawkish surprise", "Dovish", "In line, no signal", "Irrelevant, only CPI matters"], why: "The key number is core PCE m/m: under 0.2% reads dovish, above 0.3% is a hawkish surprise.", ref: "PCE Hot" },
+    { q: "Payrolls miss, but average hourly earnings jump. What overrides the bullish read for crypto?", a: ["Stagflation risk: the Fed cannot cut", "A higher unemployment rate", "A weaker dollar", "Lower oil prices"], why: "Even with a jobs miss, fast rising wages mean stagflation risk, so the Fed cannot cut. That is a bearish override.", ref: "NFP Miss" },
+    { q: "Which formula does the workspace use for Net Liquidity?", a: ["WALCL − WTREGEN − RRPONTSYD", "M2 − GDP", "WALCL + RRPONTSYD", "Fed funds rate − CPI"], why: "Net Liquidity = Fed balance sheet (WALCL) minus the Treasury General Account (WTREGEN) minus reverse repo (RRPONTSYD).", ref: "Net Liquidity Rising" },
+    { q: "The dollar index breaks above key resistance on the 4H chart. What does the playbook suggest?", a: ["Reduce crypto exposure", "Add leverage to longs", "Buy emerging market currencies", "Nothing, the dollar does not matter"], why: "A DXY break above resistance is a signal to reduce crypto exposure; a stronger dollar tightens conditions globally.", ref: "DXY Rising" },
+    { q: "Funding rates sit above +0.05% to 0.10% per 8 hours. What does that signal?", a: ["Too many leveraged longs, a top warning", "A healthy, sustainable uptrend", "Shorts are crowded", "Volatility will stay low"], why: "Funding in that range is the danger zone: the clearest overleveraged long signal in crypto.", ref: "High Funding Rate" },
+    { q: "Which FX pair does the workspace call the best single risk barometer?", a: ["AUD/JPY", "EUR/USD", "USD/IDR", "GBP/CHF"], why: "AUD is the risk on, commodity linked currency and JPY the safe haven funding currency, so AUD/JPY tracks risk appetite in real time.", ref: "AUD/JPY" },
+    { q: "The 2 year yield moves above the 10 year. What is the real danger signal, per the lesson?", a: ["The curve turning back up after the inversion", "The first day of inversion", "A 10 year yield above 5%", "A perfectly flat curve"], why: "Inversion has preceded recessions with a 6 to 24 month lag; the real danger signal is the curve moving back toward zero or positive.", ref: "Inverted Yield Curve" },
+    { q: "China's Caixin PMI misses. Which commodity is the most sensitive gauge of Chinese demand?", a: ["Copper", "Gold", "Natural gas", "Wheat"], why: "Dr. Copper is the most sensitive to China demand; weak PMI also weighs on AUD and emerging markets.", ref: "China PMI Weak" },
+    { q: "A Fed rate cut is already fully priced in. What reaction do the lessons warn about?", a: ["A muted move or sell the news", "A guaranteed rally", "A dollar spike", "Crypto ignores the Fed"], why: "If the cut is already priced in, the reaction is muted or even sell the news. Big gains tend to come 3 to 9 months after the first cut.", ref: "Fed Rate Cut" }
+  ];
+  QZ.forEach(function (x) { x.ok = x.a[0]; });
+  var Q = { order: [], i: 0, score: 0, picked: null };
+  var quizHTML = sectionHTML("mm-quiz", "🎯", "Quiz", "Ten questions straight from the lessons. Each answer links back to the section that explains it.", '<div class="card mm-q" id="mmQuiz"></div>');
+
+  /* ---------------- mount ---------------- */
+  var content = document.querySelector("#main .content") || document.getElementById("main");
+  var first = document.getElementById("overview");
+  var wrap = document.createElement("div"); wrap.innerHTML = labHTML + quizHTML;
+  while (wrap.firstChild) content.insertBefore(wrap.firstChild, first);
+  var grp = document.querySelector("#sb .sb-scroll .nav-grp");
+  if (grp) {
+    var g = document.createElement("div"); g.className = "nav-grp";
+    g.innerHTML = '<div class="nav-lbl">Practice</div><div class="nav-item" data-target="mm-lab" onclick="nav(this,\'mm-lab\')"><span class="nav-icon">🧪</span>Release Lab</div><div class="nav-item" data-target="mm-quiz" onclick="nav(this,\'mm-quiz\')"><span class="nav-icon">🎯</span>Quiz</div>';
+    grp.parentNode.insertBefore(g, grp);
+  }
+  try {
+    if (typeof SECTIONS !== "undefined" && SECTIONS.push) {
+      SECTIONS.unshift({ id: "mm-quiz", icon: "🎯", group: "Practice", title: "Quiz", sub: "Ten questions from the lessons.", kw: "quiz test practice question score" });
+      SECTIONS.unshift({ id: "mm-lab", icon: "🧪", group: "Practice", title: "Release Lab", sub: "Pick a data surprise and watch the first reaction chain.", kw: "simulator lab scenario what if cpi pce nfp payrolls fed hike cut reaction chain practice" });
+    }
+  } catch (e) {}
+  function goSec(id) { var t = document.getElementById(id); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); }
+
+  /* ---------------- Release Lab ---------------- */
+  var timers = [];
+  function renderLab() {
+    var e = EV[S.ev], c = e[S.dir];
+    document.getElementById("mmEv").innerHTML = Object.keys(EV).map(function (k) { return '<button type="button" class="chipb' + (k === S.ev ? " on" : "") + '" data-ev="' + k + '">' + EV[k].name + "</button>"; }).join("");
+    document.getElementById("mmDir").innerHTML = e.dirs.map(function (d) { return '<button type="button" class="chipb' + (d[0] === S.dir ? " on" : "") + '" data-dir="' + d[0] + '">' + d[1] + "</button>"; }).join("");
+    var ch = document.getElementById("mmChain");
+    ch.innerHTML = c.n.map(function (n, i) { return '<div class="mm-node ' + n[0] + '"><div class="nm">' + NODES[i] + '</div><div class="ar">' + n[1] + '</div><div class="ds">' + esc(n[2]) + "</div></div>"; }).join("");
+    timers.forEach(clearTimeout); timers = [];
+    Array.prototype.forEach.call(ch.children, function (nd, i) { timers.push(setTimeout(function () { nd.classList.add("in"); }, 120 + i * 260)); });
+    document.getElementById("mmVerdict").innerHTML = '<span class="mm-verdict ' + c.v[0] + '">' + c.v[1] + "</span>";
+    var item = qa(e.q[S.dir]);
+    document.getElementById("mmAns").innerHTML = item ? "<h4>" + esc(item.title) + "</h4>" + item.answer : "";
+    document.getElementById("mmRefs").innerHTML = item && item.refs ? item.refs.map(function (r) { return '<button type="button" data-go="' + r.id + '">Open lesson: ' + esc(r.label) + "</button>"; }).join("") : "";
+  }
+  document.getElementById("mm-lab").addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-ev]"); if (b) { S.ev = b.dataset.ev; renderLab(); return; }
+    var d = ev.target.closest("[data-dir]"); if (d) { S.dir = d.dataset.dir; renderLab(); return; }
+    var g = ev.target.closest("[data-go]"); if (g) goSec(g.dataset.go);
+  });
+
+  /* ---------------- Quiz ---------------- */
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function newQuiz() { Q.order = shuffle(QZ.map(function (_, i) { return i; })); Q.i = 0; Q.score = 0; Q.picked = null; Q.opts = null; renderQuiz(); }
+  function renderQuiz() {
+    var box = document.getElementById("mmQuiz"), n = QZ.length;
+    if (Q.i >= n) {
+      var msg = Q.score >= 9 ? "Desk ready." : Q.score >= 6 ? "Solid. Review the ones you missed." : "Good start. The lessons linked in each answer close the gaps.";
+      box.innerHTML = '<div class="qh"><span>Result</span></div><div class="score">' + Q.score + " / " + n + '</div><p style="color:var(--text-2);margin:6px 0 14px">' + msg + '</p><button type="button" class="go" data-q="again">Try again</button>';
+      return;
+    }
+    var x = QZ[Q.order[Q.i]]; if (!Q.opts) Q.opts = shuffle(x.a);
+    var it = qa(x.ref), ref = it && it.refs && it.refs[0];
+    var h = '<div class="qh"><span>Question ' + (Q.i + 1) + " of " + n + "</span><span>Score " + Q.score + '</span></div><div class="qbar"><b style="width:' + (Q.i / n * 100) + '%"></b></div><div class="qq">' + esc(x.q) + '</div><div class="opts">';
+    h += Q.opts.map(function (o) { var cls = Q.picked == null ? "" : o === x.ok ? " ok" : o === Q.picked ? " no" : ""; return '<button type="button" class="opt' + cls + '" data-o="' + esc(o) + '"' + (Q.picked == null ? "" : " disabled") + ">" + esc(o) + "</button>"; }).join("") + "</div>";
+    if (Q.picked != null) {
+      h += '<div class="why"><b>' + (Q.picked === x.ok ? "Correct. " : "Not quite. ") + "</b>" + esc(x.why) + "</div>";
+      h += '<div class="nx">' + (ref ? '<button type="button" class="lnk" data-go="' + ref.id + '">Open lesson: ' + esc(ref.label) + " →</button>" : "<span></span>") + '<button type="button" class="go" data-q="next">' + (Q.i === n - 1 ? "See result" : "Next question") + "</button></div>";
+    }
+    box.innerHTML = h;
+  }
+  document.getElementById("mmQuiz").addEventListener("click", function (ev) {
+    var o = ev.target.closest("[data-o]"); if (o && Q.picked == null) { Q.picked = o.getAttribute("data-o"); if (Q.picked === QZ[Q.order[Q.i]].ok) Q.score++; renderQuiz(); return; }
+    var q = ev.target.closest("[data-q]"); if (q) { if (q.dataset.q === "again") newQuiz(); else { Q.i++; Q.picked = null; Q.opts = null; renderQuiz(); } return; }
+    var g = ev.target.closest("[data-go]"); if (g) goSec(g.dataset.go);
+  });
+
+  renderLab(); newQuiz();
+  window.MM_EXT = { lab: S, render: renderLab, quiz: Q, quizData: QZ, newQuiz: newQuiz };
+})();
+
+</script>
+<script id="pfTourCfg">
+/* guided tour steps: Macro Master web demo */
+(function () {
+  function q(s) { return document.querySelector(s); }
+  function closeChat() { var p = q("#chat-panel"); if (p && p.classList.contains("open") && typeof chatToggle === "function") chatToggle(); }
+  window.PF_TOUR_OPT = { pos: "bl", css: "left:14px;bottom:52px", len: "7 steps", extraCss: "@media (max-width:560px){#pfTourBtn{bottom:14px!important}}", hint: "New here? The guided tour shows the Release Lab, the quiz and the AI tutor in one minute.", onEnd: closeChat };
+  window.PF_TOUR = [
+    { before: function () { if (window.MM_EXT) { MM_EXT.lab.ev = "cpi"; MM_EXT.lab.dir = "hot"; MM_EXT.render(); } }, sel: "#mm-lab .card", block: "start", title: "Release Lab", text: "Pick a release and a surprise. Here CPI comes in hotter than expected: rate cut odds fall, yields and the dollar rise, stocks and crypto drop. The full playbook sits underneath." },
+    { before: function () { var b = q('#mmDir [data-dir="soft"]'); if (b) b.click(); }, wait: 1500, sel: "#mmChain", title: "Flip the surprise", text: "A cooler print flips every arrow. Each step comes from the lessons in this workspace, and the buttons below jump to the lesson that explains it." },
+    { sel: "#mmQuiz", block: "start", title: "Quiz", text: "Ten questions taken from the lessons. Every answer explains why and links back to the section it comes from." },
+    { sel: "#sb", title: "24 lessons, beginner to pro", text: "Fed policy, inflation, jobs, bonds, liquidity, China, Indonesia, crypto and more. The sidebar follows you as you scroll." },
+    { before: function () { var i = q("#search-input"); if (i) { i.focus(); i.value = "cpi hot"; i.dispatchEvent(new Event("input", { bubbles: true })); } }, wait: 700, sel: ".search-wrap", title: "Search with instant answers", text: "Type a question such as \"cpi hot\" and get the answer card right away, plus the sections to read next. Press Cmd K or Ctrl K from anywhere." },
+    { before: function () { var i = q("#search-input"); if (i && typeof mmSearchClear === "function") mmSearchClear(); var p = q("#chat-panel"); if (p && !p.classList.contains("open") && typeof chatToggle === "function") chatToggle(); }, wait: 600, sel: "#chat-panel", title: "Ask AI tutor", text: "Ask how any release moves markets. It answers offline from the built in knowledge base; visitors can also connect their own free Groq key for open ended questions." },
+    { before: closeChat, sel: ".tape", title: "Live market tape", text: "Crypto prices from CoinGecko and FX from ECB reference rates, fetched by your browser. That is the tour: everything else is yours to explore." }
+  ];
+})();
+
+</script>
+<script id="pfTour">
+/* Guided tour for the portfolio web demos. Steps come from window.PF_TOUR:
+   { sel: "css" | function, title, text, before: function (may return a promise), wait: ms }
+   The tour clicks through the real app, so every step shows a working feature. */
+(function () {
+  var STEPS = window.PF_TOUR || [];
+  if (!STEPS.length || window.__pfTourOn) return;
+  window.__pfTourOn = true;
+  var OPT = window.PF_TOUR_OPT || {}, POS = OPT.pos || "br", Z = 2147483600;
+  var css = document.createElement("style");
+  css.id = "pfTourCss";
+  css.textContent = [
+    "#pfTourBtn{position:fixed;z-index:" + Z + ";display:inline-flex;align-items:center;gap:8px;padding:9px 14px 9px 11px;border-radius:999px;border:1px solid rgba(45,212,191,.55);background:rgba(8,12,13,.92);color:#bff7ee;font:600 13px/1 Inter,system-ui,-apple-system,Segoe UI,sans-serif;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .2s,border-color .2s}",
+    "#pfTourBtn:hover{transform:translateY(-2px);border-color:#2dd4bf}",
+    "#pfTourBtn i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7af0dc,#2dd4bf);color:#062a26;font-style:normal;font-size:10px}",
+    "#pfTourBtn small{font:500 11px ui-monospace,Menlo,monospace;color:#7d9a96}",
+    "#pfTourBtn.pulse{animation:pfPulse 2.2s ease-out 3}",
+    "@keyframes pfPulse{0%{box-shadow:0 0 0 0 rgba(45,212,191,.55)}100%{box-shadow:0 0 0 16px rgba(45,212,191,0)}}",
+    "#pfTourHint{position:fixed;z-index:" + Z + ";max-width:230px;padding:10px 12px;border-radius:12px;background:#0b1112;color:#dff;border:1px solid rgba(45,212,191,.4);font:500 12.5px/1.45 Inter,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .4s}",
+    "#pfTourRing{position:fixed;z-index:" + (Z - 2) + ";border-radius:12px;border:2px solid #2dd4bf;box-shadow:0 0 0 9999px rgba(3,6,7,.58),0 0 24px rgba(45,212,191,.45);pointer-events:none;transition:all .35s cubic-bezier(.22,1,.36,1)}",
+    "#pfTourDim{position:fixed;inset:0;z-index:" + (Z - 3) + ";background:transparent}",
+    "#pfTourCard{position:fixed;z-index:" + (Z - 1) + ";width:330px;max-width:calc(100vw - 24px);padding:16px 16px 14px;border-radius:16px;background:#0b1011;color:#e8f2f1;border:1px solid rgba(45,212,191,.35);box-shadow:0 20px 50px rgba(0,0,0,.5);font:400 14px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;transition:top .35s cubic-bezier(.22,1,.36,1),left .35s cubic-bezier(.22,1,.36,1),opacity .25s}",
+    "#pfTourCard .k{font:600 10.5px ui-monospace,Menlo,monospace;letter-spacing:1px;text-transform:uppercase;color:#2dd4bf}",
+    "#pfTourCard h4{margin:4px 0 6px;font:600 16px/1.3 'Space Grotesk',Inter,system-ui,sans-serif;color:#fff}",
+    "#pfTourCard p{margin:0;color:#b5c4c2}",
+    "#pfTourCard .bar{height:3px;border-radius:3px;background:rgba(255,255,255,.08);margin:12px 0 10px;overflow:hidden}",
+    "#pfTourCard .bar b{display:block;height:100%;background:linear-gradient(90deg,#2dd4bf,#8b7cf6);transition:width .35s}",
+    "#pfTourCard .row{display:flex;justify-content:space-between;align-items:center;gap:8px}",
+    "#pfTourCard button{font:600 13px Inter,system-ui,sans-serif;border-radius:999px;padding:7px 14px;cursor:pointer;border:1px solid rgba(255,255,255,.16);background:transparent;color:#cfe}",
+    "#pfTourCard button.go{background:linear-gradient(135deg,#7af0dc,#2dd4bf);color:#062a26;border-color:transparent}",
+    "#pfTourCard button.x{border:0;padding:4px 6px;color:#7d9a96}",
+    "#pfTourCard button[disabled]{opacity:.35;cursor:default}",
+    "@media (max-width:560px){#pfTourCard{left:12px!important;right:12px;width:auto}#pfTourBtn small{display:none}}"
+  ].join("\n") + (OPT.extraCss || "");
+  document.head.appendChild(css);
+
+  var btn = document.createElement("button");
+  btn.type = "button"; btn.id = "pfTourBtn"; btn.className = "pulse";
+  btn.innerHTML = "<i>&#9654;</i>Guided tour<small>" + (OPT.len || "1 min") + "</small>";
+  var place = function (el) { var m = { br: "right:14px;bottom:14px", bl: "left:14px;bottom:14px", tr: "right:14px;top:12px", tl: "left:14px;top:12px", bc: "left:50%;bottom:14px;transform:translateX(-50%)" }; el.style.cssText += ";" + (OPT.css || m[POS] || m.br); };
+  place(btn);
+  document.body.appendChild(btn);
+
+  /* one time hint so first visitors notice the tour */
+  var hint = null;
+  setTimeout(function () {
+    if (cur > -1) return;
+    hint = document.createElement("div"); hint.id = "pfTourHint";
+    hint.textContent = OPT.hint || "New here? Take the guided tour. It clicks through the main features for you.";
+    document.body.appendChild(hint);
+    var r = btn.getBoundingClientRect();
+    hint.style.left = Math.max(10, Math.min(window.innerWidth - 240, r.right - 230)) + "px";
+    hint.style.top = (r.top > 120 ? r.top - hint.offsetHeight - 10 : r.bottom + 10) + "px";
+    setTimeout(function () { if (hint) { hint.style.opacity = "0"; setTimeout(function () { hint && hint.remove(); hint = null; }, 450); } }, 6500);
+  }, OPT.hintDelay || 1600);
+
+  var ring, card, dim, cur = -1, busy = false, track = null;
+  function find(s) { try { var e = typeof s.sel === "function" ? s.sel() : document.querySelector(s.sel); return e && e.getClientRects().length ? e : null; } catch (e) { return null; } }
+  function layout() {
+    if (cur < 0 || !ring || !card) return;
+    var el = find(STEPS[cur]), vw = window.innerWidth, vh = window.innerHeight, pad = STEPS[cur].pad == null ? 6 : STEPS[cur].pad;
+    if (!el) { ring.style.opacity = "0"; card.style.bottom = "auto"; card.style.left = Math.max(12, (vw - card.offsetWidth) / 2) + "px"; card.style.top = Math.max(12, (vh - card.offsetHeight) / 2) + "px"; return; }
+    var r = el.getBoundingClientRect(), top = Math.max(4, r.top - pad), left = Math.max(4, r.left - pad), w = Math.min(vw - 8, r.width + pad * 2), h = Math.min(vh - top - 4, r.height + pad * 2);
+    ring.style.opacity = "1"; ring.style.top = top + "px"; ring.style.left = left + "px"; ring.style.width = w + "px"; ring.style.height = Math.max(24, h) + "px";
+    if (vw <= 560) { /* phone: card goes to the half of the screen the target is not in */
+      var low = top + h / 2 > vh * 0.5; card.style.left = "12px";
+      if (low) { card.style.top = "12px"; card.style.bottom = "auto"; } else { card.style.top = "auto"; card.style.bottom = "12px"; }
+      return;
+    }
+    card.style.bottom = "auto";
+    var cw = card.offsetWidth, ch = card.offsetHeight, ct, cl;
+    if (top + h + 12 + ch < vh) { ct = top + h + 12; cl = left; }
+    else if (top - 12 - ch > 0) { ct = top - 12 - ch; cl = left; }
+    else if (left + w + 12 + cw < vw) { ct = Math.min(vh - ch - 12, Math.max(12, top)); cl = left + w + 12; }
+    else if (left - 12 - cw > 0) { ct = Math.min(vh - ch - 12, Math.max(12, top)); cl = left - 12 - cw; }
+    else { ct = vh - ch - 12; cl = (vw - cw) / 2; }
+    card.style.top = ct + "px"; card.style.left = Math.max(12, Math.min(vw - cw - 12, cl)) + "px";
+  }
+  function paint() {
+    var s = STEPS[cur], n = STEPS.length;
+    card.innerHTML = '<div class="row"><span class="k">Step ' + (cur + 1) + " of " + n + '</span><button type="button" class="x" data-a="end" aria-label="Close the tour">&#10005;</button></div><h4></h4><p></p><div class="bar"><b style="width:' + ((cur + 1) / n * 100) + '%"></b></div><div class="row"><button type="button" data-a="back"' + (cur ? "" : " disabled") + '>Back</button><button type="button" class="go" data-a="next">' + (cur === n - 1 ? "Finish" : "Next") + "</button></div>";
+    card.querySelector("h4").textContent = s.title; card.querySelector("p").textContent = s.text;
+  }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function go(i) {
+    if (busy) return; if (i < 0) return; if (i >= STEPS.length) return end();
+    busy = true; cur = i;
+    if (card) card.style.opacity = "0"; if (ring) ring.style.opacity = "0";
+    var s = STEPS[i], p;
+    try { p = s.before ? s.before() : null; } catch (e) { p = null; }
+    Promise.resolve(p).catch(function () {}).then(function () { return wait(s.wait == null ? 380 : s.wait); }).then(function () {
+      var el = find(s);
+      if (el && el.scrollIntoView) { try { el.scrollIntoView({ block: s.block || "center", behavior: "smooth" }); } catch (e) { el.scrollIntoView(); } }
+      return wait(el ? 420 : 0);
+    }).then(function () { paint(); layout(); card.style.opacity = "1"; busy = false; card.querySelector(".go").focus({ preventScroll: true }); if (!track) track = setInterval(layout, 250); /* follow content that animates or reflows */ });
+  }
+  function start() {
+    if (hint) { hint.remove(); hint = null; }
+    btn.classList.remove("pulse"); btn.style.display = "none";
+    dim = document.createElement("div"); dim.id = "pfTourDim"; document.body.appendChild(dim);
+    ring = document.createElement("div"); ring.id = "pfTourRing"; document.body.appendChild(ring);
+    card = document.createElement("div"); card.id = "pfTourCard"; card.setAttribute("role", "dialog"); card.setAttribute("aria-label", "Guided tour"); document.body.appendChild(card);
+    card.addEventListener("click", function (e) { var a = e.target.closest("[data-a]"); if (!a) return; var k = a.getAttribute("data-a"); if (k === "next") go(cur + 1); else if (k === "back") go(cur - 1); else end(); });
+    dim.addEventListener("click", function () { go(cur + 1); });
+    go(0);
+  }
+  function end() {
+    clearInterval(track); track = null;
+    [ring, card, dim].forEach(function (x) { x && x.remove(); }); ring = card = dim = null; cur = -1; busy = false;
+    btn.style.display = ""; btn.querySelector("i").nextSibling.textContent = "Tour again";
+    try { OPT.onEnd && OPT.onEnd(); } catch (e) {}
+  }
+  btn.addEventListener("click", start);
+  document.addEventListener("keydown", function (e) { if (cur < 0) return; if (e.key === "Escape") end(); else if (e.key === "ArrowRight") go(cur + 1); else if (e.key === "ArrowLeft") go(cur - 1); });
+  var rt; function re() { clearTimeout(rt); rt = setTimeout(layout, 60); }
+  window.addEventListener("resize", re); window.addEventListener("scroll", re, true);
+  window.PF_TOUR_API = { start: start, go: go, end: end, cur: function () { return cur; } };
+  if (/[?&]tour=1/.test(location.search)) setTimeout(start, 900);
+})();
+
+</script>
 </body>
 </html>
