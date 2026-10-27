@@ -1254,6 +1254,7 @@ footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
 .chart .pbar.key.neg { fill: #f87171; } .chart .pbar.key.pos { fill: var(--teal-2); }
 .chart .ev-line { stroke: rgba(245,194,107,.6); stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
 .chart .ev-t { fill: #f5c26b; font: 500 10.5px var(--font-mono); }
+.chart .ev-tag { fill: rgba(245,194,107,.10); stroke: rgba(245,194,107,.45); stroke-width: 1; }
 .pos-note { font-size: 14px; color: var(--muted); margin: 12px 0 18px; }
 .pos-note b { color: var(--text); }
 .cur-box { border-top: 1px solid var(--line); padding-top: 16px; margin-bottom: 8px; }
@@ -1289,3 +1290,13 @@ footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
 .lab-jump:hover { border-color: var(--teal-2); background: rgba(45,212,191,.12); }
 .st-verdict + .lab-foot { margin-top: 16px; }
 /* ===== END ECB LAB ===== */
+
+/* ===== CV SUMMARY: content centred top to bottom, numbers on one line ===== */
+.cv-summary .card { display: flex; flex-direction: column; justify-content: center; min-height: 112px; padding: 18px 20px; }
+.cv-summary .lbl { line-height: 1.5; min-height: 3em; }
+
+/* ===== POSTER FIX (play button centred, never touches the title) ===== */
+.demo-poster .launch { gap: 20px; }
+.play { flex: 0 0 auto; margin: 0 auto; }
+.play svg { margin-left: 0; transform: translateX(1px); }
+.demo-poster:hover .play { transform: scale(1.04); }

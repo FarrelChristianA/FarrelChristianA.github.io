@@ -210,13 +210,19 @@ window.ECB_LAB = {"fx":{"d":["2025-07-01","2025-07-02","2025-07-03","2025-07-04"
     $$("#labPos [data-cat]").forEach(function (b) { b.classList.toggle("on", b.dataset.cat === C.cat); });
     $$("#labPos [data-unit]").forEach(function (b) { b.classList.toggle("on", b.dataset.unit === C.unit); });
     var vals = PO.map(function (p) { var n = netOf(p, C.cat); return C.unit === "n" ? n : n / p.oi * 100; });
-    var host = $("#posChart"), W = wOf(host), H = small() ? 280 : 300, P = { l: small() ? 46 : 60, r: 12, t: 22, b: 30 };
+    var host = $("#posChart"), W = wOf(host), H = small() ? 300 : 320, P = { l: small() ? 46 : 60, r: 12, t: 40, b: 30 };
     var nk = nice(Math.min(0, Math.min.apply(null, vals)), Math.max(0, Math.max.apply(null, vals)), 4), lo = nk.lo, hi = nk.hi;
     var s = svgBox(host, W, H), bw = (W - P.l - P.r) / PO.length, sy = function (v) { return P.t + (hi - v) / (hi - lo) * (H - P.t - P.b); };
     var fmt = function (v) { return C.unit === "n" ? (v === 0 ? "0" : (v < 0 ? "\u2212" : "") + Math.abs(v / 1000).toFixed(0) + "k") : (v < 0 ? "\u2212" : "") + Math.abs(v).toFixed(Math.abs(v) % 1 ? 1 : 0) + "%"; };
     nk.t.forEach(function (v) { var y = sy(v); el("line", { x1: P.l, x2: W - P.r, y1: y, y2: y, class: "gl" }, s); var t = el("text", { x: P.l - 8, y: y + 4, class: "ax", "text-anchor": "end" }, s); t.textContent = fmt(v); });
     el("line", { x1: P.l, x2: W - P.r, y1: sy(0), y2: sy(0), class: "zero" }, s);
-    var mark = function (after, label) { var k = PO.map(function (p) { return p.d; }).indexOf(after); if (k < 0) return; var x = P.l + (k + 1) * bw; el("line", { x1: x, x2: x, y1: P.t, y2: H - P.b, class: "ev-line" }, s); var far = x > W * 0.8, t = el("text", { x: far ? x - 4 : x + 4, y: P.t + 10, class: "ev-t", "text-anchor": far ? "end" : "start" }, s); t.textContent = label; };
+    var mark = function (after, label) { /* event marker: dashed line plus a label tag in the top margin, never on top of a bar */
+      var k = PO.map(function (p) { return p.d; }).indexOf(after); if (k < 0) return; var x = P.l + (k + 1) * bw;
+      el("line", { x1: x, x2: x, y1: P.t - 12, y2: H - P.b, class: "ev-line" }, s);
+      var far = x > W * 0.75, tw = label.length * 6.6 + 14, tx = far ? x - tw : x;
+      el("rect", { x: tx, y: 4, width: tw, height: 20, rx: 6, class: "ev-tag" }, s);
+      var t = el("text", { x: tx + tw / 2, y: 18, class: "ev-t", "text-anchor": "middle" }, s); t.textContent = label;
+    };
     mark("2026-06-09", "11 Jun hike"); mark("2026-09-08", "10 Sep hike");
     vals.forEach(function (v, k) {
       var x = P.l + k * bw + bw * 0.18, w = bw * 0.64, y0 = sy(0), y = sy(v), p = PO[k];
