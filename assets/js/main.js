@@ -502,3 +502,21 @@
     ["orn-p1", "orn-p2"].forEach(function (c) { var p = document.createElement("span"); p.className = "orn orn-plus " + c; p.setAttribute("aria-hidden", "true"); sec.appendChild(p); });
   });
 })();
+
+/* ---------- visitor stats (GoatCounter: anonymous, no cookies) ---------- */
+(function () {
+  function ev(name, title) { try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: name, title: title || name, event: true }); } catch (e) {} }
+  window.pfEvent = ev;
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("a, button, .demo-poster, [data-launch]"); if (!a) return;
+    var shell = a.closest("[data-demo]");
+    if (shell && (a.matches(".demo-poster, [data-launch]") || a.closest(".demo-poster"))) return ev("demo-launch-" + (shell.getAttribute("data-demo").split("/")[2] || "demo"), "Launched a live demo");
+    var h = a.getAttribute && a.getAttribute("href") || "";
+    if (/\.pdf$/i.test(h)) return ev("download-" + h.split("/").pop(), "Downloaded a PDF");
+    if (/\.xlsx$|\.csv$/i.test(h)) return ev("download-" + h.split("/").pop(), "Downloaded data");
+    if (/^mailto:/i.test(h)) return ev("click-email", "Clicked email");
+    if (/linkedin\.com/i.test(h)) return ev("click-linkedin", "Clicked LinkedIn");
+    if (/github\.com/i.test(h)) return ev("click-github", "Clicked GitHub");
+    var t = a.closest(".lab-tabs button[data-t]"); if (t) return ev("ecb-lab-" + t.getAttribute("data-t"), "Used the ECB lab");
+  }, true);
+})();

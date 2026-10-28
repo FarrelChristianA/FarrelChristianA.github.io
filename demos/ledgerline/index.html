@@ -4496,7 +4496,9 @@ render();
       return wait(el ? 420 : 0);
     }).then(function () { paint(); layout(); card.style.opacity = "1"; busy = false; card.querySelector(".go").focus({ preventScroll: true }); if (!track) track = setInterval(layout, 250); /* follow content that animates or reflows */ });
   }
+  function stat(n) { try { var w = window.parent; if (w && w !== window && w.pfEvent) w.pfEvent(n + "-" + (location.pathname.split("/").slice(-2)[0] || "demo"), "Guided tour"); } catch (e) {} }
   function start() {
+    stat("tour-start");
     if (hint) { hint.remove(); hint = null; }
     btn.classList.remove("pulse"); btn.style.display = "none";
     dim = document.createElement("div"); dim.id = "pfTourDim"; document.body.appendChild(dim);
@@ -4507,6 +4509,7 @@ render();
     go(0);
   }
   function end() {
+    if (cur === STEPS.length - 1) stat("tour-finish");
     clearInterval(track); track = null;
     [ring, card, dim].forEach(function (x) { x && x.remove(); }); ring = card = dim = null; cur = -1; busy = false;
     btn.style.display = ""; btn.querySelector("i").nextSibling.textContent = "Tour again";
